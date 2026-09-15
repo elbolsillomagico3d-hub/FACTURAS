@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <meta name="description" content="Generador de facturas y presupuestos - El Bolsillo Mágico 3D">
 <title>El Bolsillo Mágico 3D | Facturas y Presupuestos</title>
-
 <style>
 :root{
   --green:#173b00;
@@ -22,45 +20,37 @@
   --radius:18px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
 }
-
 *{
   box-sizing:border-box;
 }
-
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:var(--cream);
   color:var(--text);
 }
-
 header{
   background:linear-gradient(135deg,var(--green-dark),var(--green));
   color:white;
   padding:25px 20px;
 }
-
 .header-inner{
   max-width:1200px;
   margin:auto;
 }
-
 header h1{
   margin:0;
   font-size:28px;
 }
-
 header p{
   margin:7px 0 0;
   opacity:.85;
 }
-
 .container{
   max-width:1200px;
   margin:30px auto;
   padding:0 16px 50px;
 }
-
 .card{
   background:white;
   border:1px solid var(--line);
@@ -69,34 +59,28 @@ header p{
   margin-bottom:20px;
   box-shadow:var(--shadow);
 }
-
 .card h2{
   margin:0 0 18px;
   color:var(--green);
   font-size:20px;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:16px;
 }
-
 .field{
   display:flex;
   flex-direction:column;
   gap:7px;
 }
-
 .field.full{
   grid-column:1/-1;
 }
-
 label{
   font-weight:700;
   font-size:14px;
 }
-
 input,
 textarea,
 select{
@@ -108,50 +92,41 @@ select{
   outline:none;
   background:#fff;
 }
-
 input:focus,
 textarea:focus,
 select:focus{
   border-color:var(--green-light);
   box-shadow:0 0 0 3px rgba(47,101,13,.10);
 }
-
 textarea{
   min-height:90px;
   resize:vertical;
 }
-
 .help{
   color:var(--muted);
   font-size:12px;
 }
-
 .optional{
   color:var(--muted);
   font-weight:400;
 }
-
 .company-box{
   background:#f4f7f1;
   border:1px solid #dce5d7;
   border-radius:14px;
   padding:18px;
 }
-
 .company-box strong{
   color:var(--green);
 }
-
 .products-wrapper{
   overflow-x:auto;
 }
-
 .products-table{
   width:100%;
   border-collapse:collapse;
   min-width:950px;
 }
-
 .products-table th{
   background:var(--green);
   color:white;
@@ -159,35 +134,28 @@ textarea{
   text-align:left;
   font-size:13px;
 }
-
 .products-table td{
   border-bottom:1px solid var(--line);
   padding:9px 7px;
   vertical-align:middle;
 }
-
 .products-table input{
   padding:9px;
 }
-
 .products-table .qty{
   width:80px;
 }
-
 .products-table .price{
   width:130px;
 }
-
 .products-table .readonly-price{
   background:#f2f5ef;
   font-weight:700;
 }
-
 .products-table .money-cell{
   white-space:nowrap;
   font-weight:700;
 }
-
 .btn-delete{
   border:0;
   background:#fff1f0;
@@ -197,15 +165,12 @@ textarea{
   cursor:pointer;
   font-weight:700;
 }
-
 .btn-delete:hover{
   background:#ffe2df;
 }
-
 .add-row{
   margin-top:14px;
 }
-
 button{
   border:0;
   border-radius:11px;
@@ -214,43 +179,35 @@ button{
   font-weight:700;
   cursor:pointer;
 }
-
 .btn-primary{
   background:var(--green);
   color:white;
 }
-
 .btn-primary:hover{
   background:var(--green-dark);
 }
-
 .btn-secondary{
   background:#edf1e9;
   color:var(--green);
 }
-
 .btn-danger{
   background:#fff0ef;
   color:var(--danger);
 }
-
 .btn-blue{
   background:#eaf1ff;
   color:#174ea6;
 }
-
 .actions{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
 }
-
 .totals{
   max-width:480px;
   margin-left:auto;
   margin-top:20px;
 }
-
 .total-row{
   display:flex;
   justify-content:space-between;
@@ -258,19 +215,16 @@ button{
   padding:9px 0;
   border-bottom:1px solid var(--line);
 }
-
 .total-row span:last-child{
   font-weight:700;
   white-space:nowrap;
 }
-
 .total-final{
   font-size:21px;
   color:var(--green);
   border-bottom:0;
   padding-top:15px;
 }
-
 .status{
   margin-top:15px;
   padding:12px 14px;
@@ -278,19 +232,16 @@ button{
   display:none;
   font-size:14px;
 }
-
 .status.success{
   display:block;
   background:#eaf7ed;
   color:var(--success);
 }
-
 .status.error{
   display:block;
   background:#fff0ef;
   color:var(--danger);
 }
-
 .legal-note{
   margin-top:18px;
   padding:14px;
@@ -300,302 +251,209 @@ button{
   font-size:13px;
   line-height:1.5;
 }
-
 @media(max-width:800px){
-
   .grid{
     grid-template-columns:1fr;
   }
-
   .card{
     padding:17px;
   }
-
   header h1{
     font-size:23px;
   }
-
   .totals{
     max-width:none;
   }
 }
 </style>
 </head>
-
 <body>
-
 <header>
   <div class="header-inner">
     <h1>El Bolsillo Mágico 3D</h1>
     <p>Generador de facturas y presupuestos</p>
   </div>
 </header>
-
 <div class="container">
-
   <!-- =====================================================
        TIPO DE DOCUMENTO
   ====================================================== -->
-
   <div class="card">
-
     <h2>Documento</h2>
-
     <div class="grid">
-
       <div class="field">
-        <label for="documentType">Tipo de documento</label>
-
+        <label for="documentType">
+          Tipo de documento
+        </label>
         <select id="documentType">
-          <option value="factura">Factura</option>
-          <option value="presupuesto">Presupuesto</option>
+          <option value="factura">
+            Factura
+          </option>
+          <option value="presupuesto">
+            Presupuesto
+          </option>
         </select>
       </div>
-
       <div class="field">
-        <label for="documentNumber">Número</label>
-
+        <label for="documentNumber">
+          Número
+        </label>
         <input
           id="documentNumber"
           type="text"
           readonly
         >
       </div>
-
       <div class="field">
-        <label for="documentDate">Fecha</label>
-
+        <label for="documentDate">
+          Fecha
+        </label>
         <input
           id="documentDate"
           type="date"
         >
       </div>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        DATOS DE FACTURACIÓN
   ====================================================== -->
-
   <div class="card">
-
     <h2>Datos de facturación</h2>
-
     <div class="company-box">
-
       <div class="grid">
-
         <div class="field">
-
           <label for="companyName">
             Nombre / Razón social
           </label>
-
           <input
             id="companyName"
             value="Almudena Vázquez Camarena"
           >
-
         </div>
-
-
         <div class="field">
-
           <label for="companyNif">
             NIF
           </label>
-
           <input
             id="companyNif"
             value="49122806G"
           >
-
         </div>
-
-
         <div class="field full">
-
           <label for="companyAddress">
             Dirección
           </label>
-
           <input
             id="companyAddress"
             value="Carretera A8126 Morón-Coripe km 3, Venta Espartero, Morón de la Frontera, Sevilla"
           >
-
         </div>
-
       </div>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        CLIENTE
   ====================================================== -->
-
   <div class="card">
-
     <h2>Datos del cliente</h2>
-
     <div class="grid">
-
       <div class="field">
-
         <label for="clientName">
           Nombre / Razón social
         </label>
-
         <input
           id="clientName"
           placeholder="Nombre del cliente"
         >
-
       </div>
-
-
       <div class="field">
-
         <label for="clientNif">
           NIF / DNI
           <span class="optional">(opcional)</span>
         </label>
-
         <input
           id="clientNif"
           placeholder="Opcional"
         >
-
       </div>
-
-
       <div class="field full">
-
         <label for="clientAddress">
           Dirección
           <span class="optional">(opcional)</span>
         </label>
-
         <input
           id="clientAddress"
           placeholder="Dirección del cliente"
         >
-
       </div>
-
-
       <div class="field">
-
         <label for="clientPhone">
           Teléfono
           <span class="optional">(opcional)</span>
         </label>
-
         <input
           id="clientPhone"
           type="tel"
           placeholder="Opcional"
         >
-
       </div>
-
-
       <div class="field">
-
         <label for="clientEmail">
           Email
           <span class="optional">(opcional)</span>
         </label>
-
         <input
           id="clientEmail"
           type="email"
           placeholder="Opcional"
         >
-
       </div>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        PRODUCTOS
   ====================================================== -->
-
   <div class="card">
-
     <h2>Productos / Servicios</h2>
-
     <div class="help" style="margin-bottom:14px;">
-
       Introduce siempre el
       <strong>precio unitario con IVA incluido</strong>.
-
       El sistema calculará automáticamente:
-
       precio sin IVA + IVA del 21%.
-
     </div>
-
-
     <div class="products-wrapper">
-
       <table class="products-table">
-
         <thead>
-
           <tr>
-
             <th>
               Producto / Servicio
             </th>
-
             <th>
               Cant.
             </th>
-
             <th>
               Precio unitario<br>
               IVA incluido
             </th>
-
             <th>
               Precio unitario<br>
               sin IVA
             </th>
-
             <th>
               IVA
             </th>
-
             <th>
               Total<br>
               IVA incluido
             </th>
-
             <th></th>
-
           </tr>
-
         </thead>
-
         <tbody id="productsBody"></tbody>
-
       </table>
-
     </div>
-
-
     <div class="add-row">
-
       <button
         type="button"
         class="btn-secondary"
@@ -603,28 +461,18 @@ button{
       >
         + Añadir producto
       </button>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        DESCUENTO
   ====================================================== -->
-
   <div class="card">
-
     <h2>Descuento</h2>
-
     <div class="grid">
-
       <div class="field">
-
         <label for="discount">
           Descuento IVA incluido
         </label>
-
         <input
           id="discount"
           type="number"
@@ -633,120 +481,77 @@ button{
           value="0"
           placeholder="0,00"
         >
-
         <span class="help">
           Introduce el descuento con IVA incluido.
         </span>
-
       </div>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        TOTALES
   ====================================================== -->
-
   <div class="card">
-
     <h2>Totales</h2>
-
     <div class="totals">
-
       <div class="total-row">
-
         <span>
           Subtotal sin IVA
         </span>
-
         <span id="subtotalNet">
           0,00 €
         </span>
-
       </div>
-
-
       <div class="total-row">
-
         <span>
           Descuento
         </span>
-
         <span id="discountDisplay">
           0,00 €
         </span>
-
       </div>
-
-
       <div class="total-row">
-
         <span>
           Base imponible
         </span>
-
         <span id="taxableBase">
           0,00 €
         </span>
-
       </div>
-
-
       <div class="total-row">
-
         <span>
           IVA 21%
         </span>
-
         <span id="vatTotal">
           0,00 €
         </span>
-
       </div>
-
-
       <div class="total-row total-final">
-
         <span>
           TOTAL
         </span>
-
         <span id="grandTotal">
           0,00 €
         </span>
-
       </div>
-
     </div>
-
   </div>
-
-
   <!-- =====================================================
        OBSERVACIONES
   ====================================================== -->
-
   <div class="card">
-
     <h2>Observaciones</h2>
-
     <div class="field">
-
       <label for="notes">
         Notas
-        <span class="optional">(opcional)</span>
+        <span class="optional">
+          (opcional)
+        </span>
       </label>
-
       <textarea
         id="notes"
         placeholder="Escribe aquí cualquier observación..."
       ></textarea>
-
     </div>
-
-
     <div
       id="legalNote"
       class="legal-note"
@@ -754,20 +559,13 @@ button{
     >
       Este presupuesto no es una factura. La factura correspondiente a la operación se emitirá una vez se realice el pago.
     </div>
-
   </div>
-
-
   <!-- =====================================================
        ACCIONES
   ====================================================== -->
-
   <div class="card">
-
     <h2>Acciones</h2>
-
     <div class="actions">
-
       <button
         type="button"
         class="btn-primary"
@@ -775,8 +573,6 @@ button{
       >
         Generar PDF
       </button>
-
-
       <button
         type="button"
         class="btn-blue"
@@ -784,8 +580,6 @@ button{
       >
         Enviar al cliente
       </button>
-
-
       <button
         type="button"
         class="btn-blue"
@@ -793,8 +587,6 @@ button{
       >
         Enviar a mi correo
       </button>
-
-
       <button
         type="button"
         class="btn-secondary"
@@ -802,8 +594,6 @@ button{
       >
         Nuevo documento
       </button>
-
-
       <button
         type="button"
         class="btn-danger"
@@ -811,193 +601,167 @@ button{
       >
         Limpiar
       </button>
-
     </div>
-
-
     <div
       id="status"
       class="status"
     ></div>
-
   </div>
-
 </div>
-
-
 <!-- =====================================================
-     LIBRERÍAS
+     EMAILJS
+     
+     LO DEJAMOS PREPARADO PARA MÁS ADELANTE
 ====================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-
-
+<!-- =====================================================
+     JSPDF
+     
+     VERSIÓN CORREGIDA
+====================================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-
 /* =========================================================
    CONFIGURACIÓN
 ========================================================= */
-
 const VAT_RATE = 0.21;
-
+/*
+  EmailJS lo configuraremos más adelante.
+*/
 const EMAILJS_PUBLIC_KEY = "TU_PUBLIC_KEY";
 const EMAILJS_SERVICE_ID = "TU_SERVICE_ID";
 const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
-
-const MY_EMAIL = "elbolsillomagico3d@gmail.com";
-
+const MY_EMAIL =
+  "elbolsillomagico3d@gmail.com";
 const STORAGE_KEY =
   "bolsillo_magico_documento";
-
-
 /* =========================================================
    INICIO
 ========================================================= */
-
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-
+    /*
+      Intentar inicializar EmailJS.
+      No afecta al funcionamiento del PDF.
+    */
     try{
-
-      emailjs.init({
-        publicKey:
-          EMAILJS_PUBLIC_KEY
-      });
-
-    }catch(e){
-
+      if(
+        typeof emailjs !== "undefined" &&
+        EMAILJS_PUBLIC_KEY !== "TU_PUBLIC_KEY"
+      ){
+        emailjs.init({
+          publicKey:
+            EMAILJS_PUBLIC_KEY
+        });
+      }
+    }catch(error){
       console.warn(
-        "EmailJS todavía no está configurado."
+        "EmailJS todavía no está configurado.",
+        error
       );
-
     }
-
-
+    /*
+      Fecha actual
+    */
     document.getElementById(
       "documentDate"
     ).value = today();
-
-
+    /*
+      Cargar datos guardados
+    */
     loadForm();
-
-
+    /*
+      Si no hay productos,
+      crear uno automáticamente.
+    */
     if(
       !document.getElementById(
         "productsBody"
       ).children.length
     ){
-
       addProduct();
-
     }
-
-
+    /*
+      Número del documento
+    */
     updateDocumentNumber();
-
+    /*
+      Cálculos
+    */
     calculateTotals();
-
+    /*
+      Nota legal
+    */
     updateLegalNote();
-
-
+    /*
+      Detectar cambios
+    */
     document.addEventListener(
       "input",
       (e) => {
-
         if(
           e.target.matches("input") ||
           e.target.matches("textarea") ||
           e.target.matches("select")
         ){
-
           calculateTotals();
-
           saveForm();
-
         }
-
       }
     );
-
-
+    /*
+      Cambio factura / presupuesto
+    */
     document.getElementById(
       "documentType"
     ).addEventListener(
       "change",
       () => {
-
         updateDocumentNumber();
-
         updateLegalNote();
-
         calculateTotals();
-
         saveForm();
-
       }
     );
-
   }
 );
-
-
 /* =========================================================
    FECHA
 ========================================================= */
-
 function today(){
-
   const d =
     new Date();
-
   const year =
     d.getFullYear();
-
   const month =
     String(
       d.getMonth()+1
     ).padStart(2,"0");
-
   const day =
     String(
       d.getDate()
     ).padStart(2,"0");
-
   return `${year}-${month}-${day}`;
-
 }
-
-
 /* =========================================================
    FORMATO FECHA
 ========================================================= */
-
 function formatDate(date){
-
   if(!date){
     return "";
   }
-
   const parts =
     date.split("-");
-
   if(parts.length !== 3){
     return date;
   }
-
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
-
 }
-
-
 /* =========================================================
    MONEDA
 ========================================================= */
-
 function money(value){
-
   return Number(
     value || 0
   ).toLocaleString(
@@ -1007,55 +771,34 @@ function money(value){
       maximumFractionDigits:2
     }
   ) + " €";
-
 }
-
-
 /* =========================================================
    IVA
 ========================================================= */
-
 function grossToNet(gross){
-
   return Number(
     gross || 0
   ) / (1 + VAT_RATE);
-
 }
-
-
 function grossToVat(gross){
-
   const net =
     grossToNet(gross);
-
   return Number(
     gross || 0
   ) - net;
-
 }
-
-
 /* =========================================================
    PRODUCTOS
 ========================================================= */
-
 function addProduct(data = null){
-
   const tbody =
     document.getElementById(
       "productsBody"
     );
-
-
   const tr =
     document.createElement("tr");
-
-
   tr.innerHTML = `
-
     <td>
-
       <input
         type="text"
         class="product-name"
@@ -1064,12 +807,8 @@ function addProduct(data = null){
           data?.name || ""
         )}"
       >
-
     </td>
-
-
     <td>
-
       <input
         type="number"
         class="product-qty qty"
@@ -1077,12 +816,8 @@ function addProduct(data = null){
         step="1"
         value="${data?.quantity ?? 1}"
       >
-
     </td>
-
-
     <td>
-
       <input
         type="number"
         class="product-gross price"
@@ -1091,46 +826,30 @@ function addProduct(data = null){
         placeholder="0,00"
         value="${data?.grossPrice ?? ""}"
       >
-
     </td>
-
-
     <td>
-
       <input
         type="text"
         class="product-net readonly-price"
         readonly
         value="0,00 €"
       >
-
     </td>
-
-
     <td>
-
       <span
         class="product-vat money-cell"
       >
         0,00 €
       </span>
-
     </td>
-
-
     <td>
-
       <span
         class="product-total money-cell"
       >
         0,00 €
       </span>
-
     </td>
-
-
     <td>
-
       <button
         type="button"
         class="btn-delete"
@@ -1138,712 +857,461 @@ function addProduct(data = null){
       >
         ✕
       </button>
-
     </td>
-
   `;
-
-
   tbody.appendChild(tr);
-
-
   calculateTotals();
-
 }
-
-
+/* =========================================================
+   ELIMINAR PRODUCTO
+========================================================= */
 function removeProduct(button){
-
   const row =
     button.closest("tr");
-
   if(row){
     row.remove();
   }
-
   calculateTotals();
-
   saveForm();
-
 }
-
-
 /* =========================================================
    CÁLCULO
 ========================================================= */
-
 function calculateTotals(){
-
   const rows =
     document.querySelectorAll(
       "#productsBody tr"
     );
-
-
   let grossSubtotal = 0;
-
-
   rows.forEach(row => {
-
     const quantity =
       Number(
         row.querySelector(
           ".product-qty"
         )?.value || 0
       );
-
-
     const grossPrice =
       Number(
         row.querySelector(
           ".product-gross"
         )?.value || 0
       );
-
-
     const netPrice =
       grossToNet(
         grossPrice
       );
-
-
     const lineGross =
       quantity *
       grossPrice;
-
-
     const lineNet =
       quantity *
       netPrice;
-
-
     const lineVat =
       lineGross -
       lineNet;
-
-
     grossSubtotal +=
       lineGross;
-
-
     const netInput =
       row.querySelector(
         ".product-net"
       );
-
-
     if(netInput){
-
       netInput.value =
         money(netPrice);
-
     }
-
-
     const vatElement =
       row.querySelector(
         ".product-vat"
       );
-
-
     if(vatElement){
-
       vatElement.textContent =
         money(lineVat);
-
     }
-
-
     const totalElement =
       row.querySelector(
         ".product-total"
       );
-
-
     if(totalElement){
-
       totalElement.textContent =
         money(lineGross);
-
     }
-
   });
-
-
   let grossDiscount =
     Number(
       document.getElementById(
         "discount"
       ).value || 0
     );
-
-
   if(grossDiscount < 0){
-
     grossDiscount = 0;
-
   }
-
-
   if(grossDiscount > grossSubtotal){
-
     grossDiscount =
       grossSubtotal;
-
   }
-
-
   const netSubtotal =
     grossToNet(
       grossSubtotal
     );
-
-
   const netDiscount =
     grossToNet(
       grossDiscount
     );
-
-
   const taxableBase =
     Math.max(
       0,
       netSubtotal -
       netDiscount
     );
-
-
   const grossTotal =
     Math.max(
       0,
       grossSubtotal -
       grossDiscount
     );
-
-
   const vatTotal =
     grossTotal -
     taxableBase;
-
-
   document.getElementById(
     "subtotalNet"
   ).textContent =
     money(netSubtotal);
-
-
   document.getElementById(
     "discountDisplay"
   ).textContent =
     money(grossDiscount);
-
-
   document.getElementById(
     "taxableBase"
   ).textContent =
     money(taxableBase);
-
-
   document.getElementById(
     "vatTotal"
   ).textContent =
     money(vatTotal);
-
-
   document.getElementById(
     "grandTotal"
   ).textContent =
     money(grossTotal);
-
 }
-
-
 /* =========================================================
    PRODUCTOS PARA EL DOCUMENTO
 ========================================================= */
-
 function getProducts(){
-
   const rows =
     document.querySelectorAll(
       "#productsBody tr"
     );
-
-
   const products = [];
-
-
   rows.forEach(row => {
-
     const name =
       row.querySelector(
         ".product-name"
       )?.value.trim() || "";
-
-
     const quantity =
       Number(
         row.querySelector(
           ".product-qty"
         )?.value || 0
       );
-
-
     const grossPrice =
       Number(
         row.querySelector(
           ".product-gross"
         )?.value || 0
       );
-
-
     if(
       !name &&
       !grossPrice
     ){
       return;
     }
-
-
     const netPrice =
       grossToNet(
         grossPrice
       );
-
-
     const grossTotal =
       quantity *
       grossPrice;
-
-
     const netTotal =
       quantity *
       netPrice;
-
-
     const vat =
       grossTotal -
       netTotal;
-
-
     products.push({
-
       name,
-
       quantity,
-
       grossPrice,
-
       netPrice,
-
       vatRate:21,
-
       vat,
-
       grossTotal,
-
       netTotal
-
     });
-
   });
-
-
   return products;
-
 }
-
-
 /* =========================================================
    DATOS DEL DOCUMENTO
 ========================================================= */
-
 function getDocumentData(){
-
   const type =
     document.getElementById(
       "documentType"
     ).value;
-
-
   const products =
     getProducts();
-
-
   const grossSubtotal =
     products.reduce(
       (sum,p) =>
         sum + p.grossTotal,
       0
     );
-
-
   let grossDiscount =
     Number(
       document.getElementById(
         "discount"
       ).value || 0
     );
-
-
   if(grossDiscount < 0){
-
     grossDiscount = 0;
-
   }
-
-
   if(grossDiscount > grossSubtotal){
-
     grossDiscount =
       grossSubtotal;
-
   }
-
-
   const netSubtotal =
     grossToNet(
       grossSubtotal
     );
-
-
   const netDiscount =
     grossToNet(
       grossDiscount
     );
-
-
   const taxableBase =
     Math.max(
       0,
       netSubtotal -
       netDiscount
     );
-
-
   const grossTotal =
     Math.max(
       0,
       grossSubtotal -
       grossDiscount
     );
-
-
   const vatTotal =
     grossTotal -
     taxableBase;
-
-
   return {
-
     type,
-
     title:
       type === "factura"
         ? "FACTURA"
         : "PRESUPUESTO",
-
     number:
       document.getElementById(
         "documentNumber"
       ).value,
-
     date:
       document.getElementById(
         "documentDate"
       ).value,
-
-
     company:{
-
       name:
         document.getElementById(
           "companyName"
         ).value.trim(),
-
       nif:
         document.getElementById(
           "companyNif"
         ).value.trim(),
-
       address:
         document.getElementById(
           "companyAddress"
         ).value.trim()
-
     },
-
-
     client:{
-
       name:
         document.getElementById(
           "clientName"
         ).value.trim(),
-
       nif:
         document.getElementById(
           "clientNif"
         ).value.trim(),
-
       address:
         document.getElementById(
           "clientAddress"
         ).value.trim(),
-
       phone:
         document.getElementById(
           "clientPhone"
         ).value.trim(),
-
       email:
         document.getElementById(
           "clientEmail"
         ).value.trim()
-
     },
-
-
     products,
-
     grossSubtotal,
-
     netSubtotal,
-
     grossDiscount,
-
     netDiscount,
-
     taxableBase,
-
     vatTotal,
-
     grossTotal,
-
     notes:
       document.getElementById(
         "notes"
       ).value.trim()
-
   };
-
 }
-
-
 /* =========================================================
    NUMERACIÓN
 ========================================================= */
-
 function updateDocumentNumber(){
-
   const type =
     document.getElementById(
       "documentType"
     ).value;
-
-
   const year =
     new Date()
       .getFullYear();
-
-
   const storageKey =
     type === "factura"
       ? `invoiceNumber_${year}`
       : `budgetNumber_${year}`;
-
-
   let number =
     Number(
       localStorage.getItem(
         storageKey
       ) || 0
     );
-
-
   if(number === 0){
-
     number = 1;
-
     localStorage.setItem(
       storageKey,
       number
     );
-
   }
-
-
   const prefix =
     type === "factura"
       ? ""
       : "PRES-";
-
-
   document.getElementById(
     "documentNumber"
   ).value =
-
     prefix +
     year +
     "-" +
     String(number)
       .padStart(4,"0");
-
 }
-
-
 /* =========================================================
    INCREMENTAR NÚMERO
 ========================================================= */
-
 function incrementDocumentNumber(){
-
   const type =
     document.getElementById(
       "documentType"
     ).value;
-
-
   const year =
     new Date()
       .getFullYear();
-
-
   const storageKey =
     type === "factura"
       ? `invoiceNumber_${year}`
       : `budgetNumber_${year}`;
-
-
   let number =
     Number(
       localStorage.getItem(
         storageKey
       ) || 1
     );
-
-
   number++;
-
-
   localStorage.setItem(
     storageKey,
     number
   );
-
 }
-
-
 /* =========================================================
    NOTA PRESUPUESTO
 ========================================================= */
-
 function updateLegalNote(){
-
   const type =
     document.getElementById(
       "documentType"
     ).value;
-
-
   const note =
     document.getElementById(
       "legalNote"
     );
-
-
   if(type === "presupuesto"){
-
     note.style.display =
       "block";
-
   }else{
-
     note.style.display =
       "none";
-
   }
-
 }
-
-
 /* =========================================================
    VALIDAR
 ========================================================= */
-
 function validateDocument(){
-
   const clientName =
     document.getElementById(
       "clientName"
     ).value.trim();
-
-
   if(!clientName){
-
     showStatus(
       "Debes introducir el nombre o razón social del cliente.",
       "error"
     );
-
     return false;
-
   }
-
-
   return true;
-
 }
-
-
 /* =========================================================
    CREAR PDF
 ========================================================= */
-
 function createPDF(){
-
+  /*
+    Comprobar que jsPDF está disponible.
+  */
+  if(
+    !window.jspdf ||
+    typeof window.jspdf.jsPDF !== "function"
+  ){
+    throw new Error(
+      "La librería jsPDF no está cargada."
+    );
+  }
   const data =
     getDocumentData();
-
-
   const { jsPDF } =
     window.jspdf;
-
-
   const doc =
     new jsPDF({
-
       orientation:"portrait",
-
       unit:"mm",
-
       format:"a4"
-
     });
-
-
   const pageWidth =
     doc.internal.pageSize
       .getWidth();
-
-
   const pageHeight =
     doc.internal.pageSize
       .getHeight();
-
-
   let y = 18;
-
-
-  /* CABECERA */
-
+  /* =====================================================
+     CABECERA
+  ====================================================== */
   doc.setFillColor(
     23,
     59,
     0
   );
-
-
   doc.rect(
     0,
     0,
@@ -1851,45 +1319,31 @@ function createPDF(){
     34,
     "F"
   );
-
-
   doc.setTextColor(
     255,
     255,
     255
   );
-
-
   doc.setFontSize(20);
-
   doc.setFont(
     undefined,
     "bold"
   );
-
-
   doc.text(
     "El Bolsillo Mágico 3D",
     15,
     15
   );
-
-
   doc.setFontSize(10);
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
   doc.text(
     data.title,
     15,
     24
   );
-
-
   doc.text(
     `Nº ${data.number}`,
     pageWidth - 15,
@@ -1898,8 +1352,6 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   doc.text(
     formatDate(data.date),
     pageWidth - 15,
@@ -1908,214 +1360,141 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y = 46;
-
-
-  /* DATOS EMPRESA */
-
+  /* =====================================================
+     DATOS EMPRESA
+  ====================================================== */
   doc.setTextColor(
     23,
     27,
     21
   );
-
-
   doc.setFontSize(11);
-
   doc.setFont(
     undefined,
     "bold"
   );
-
-
   doc.text(
     "DATOS DE FACTURACIÓN",
     15,
     y
   );
-
-
   y += 7;
-
-
   doc.setFontSize(9);
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
   doc.text(
     data.company.name,
     15,
     y
   );
-
-
   y += 5;
-
-
   doc.text(
     `NIF: ${data.company.nif}`,
     15,
     y
   );
-
-
   y += 5;
-
-
   const companyAddressLines =
     doc.splitTextToSize(
       data.company.address,
       82
     );
-
-
   doc.text(
     companyAddressLines,
     15,
     y
   );
-
-
   y +=
     companyAddressLines.length *
     5;
-
-
-  /* DATOS CLIENTE */
-
+  /* =====================================================
+     DATOS CLIENTE
+  ====================================================== */
   let clientY = 53;
-
-
   doc.setFontSize(11);
-
   doc.setFont(
     undefined,
     "bold"
   );
-
-
   doc.text(
     "CLIENTE",
     112,
     clientY
   );
-
-
   clientY += 7;
-
-
   doc.setFontSize(9);
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
   if(data.client.name){
-
     doc.text(
       data.client.name,
       112,
       clientY
     );
-
     clientY += 5;
-
   }
-
-
   if(data.client.nif){
-
     doc.text(
       `NIF/DNI: ${data.client.nif}`,
       112,
       clientY
     );
-
     clientY += 5;
-
   }
-
-
   if(data.client.address){
-
     const addressLines =
       doc.splitTextToSize(
         data.client.address,
         82
       );
-
-
     doc.text(
       addressLines,
       112,
       clientY
     );
-
-
     clientY +=
       addressLines.length *
       5;
-
   }
-
-
   if(data.client.phone){
-
     doc.text(
       `Tel.: ${data.client.phone}`,
       112,
       clientY
     );
-
     clientY += 5;
-
   }
-
-
   if(data.client.email){
-
     doc.text(
       `Email: ${data.client.email}`,
       112,
       clientY
     );
-
     clientY += 5;
-
   }
-
-
   y =
     Math.max(
       y,
       clientY
     ) + 8;
-
-
-  /* TABLA */
-
+  /* =====================================================
+     TABLA
+  ====================================================== */
   doc.setFillColor(
     23,
     59,
     0
   );
-
-
   doc.setTextColor(
     255,
     255,
     255
   );
-
-
   doc.rect(
     15,
     y,
@@ -2123,111 +1502,79 @@ function createPDF(){
     9,
     "F"
   );
-
-
   doc.setFontSize(7.5);
-
   doc.setFont(
     undefined,
     "bold"
   );
-
-
   doc.text(
     "PRODUCTO / SERVICIO",
     17,
     y + 6
   );
-
-
   doc.text(
     "CANT.",
     94,
     y + 6
   );
-
-
   doc.text(
     "P. UNIT.",
     108,
     y + 6
   );
-
-
   doc.text(
     "SIN IVA",
     134,
     y + 6
   );
-
-
   doc.text(
     "IVA",
     157,
     y + 6
   );
-
-
   doc.text(
     "TOTAL",
     174,
     y + 6
   );
-
-
   y += 9;
-
-
   doc.setTextColor(
     23,
     27,
     21
   );
-
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
+  /*
+    Productos
+  */
   data.products.forEach(
     product => {
-
       if(
         y >
         pageHeight - 50
       ){
-
         doc.addPage();
-
         y = 20;
-
       }
-
-
       const nameLines =
         doc.splitTextToSize(
           product.name || "",
           70
         );
-
-
       const rowHeight =
         Math.max(
           8,
           nameLines.length *
           4 + 4
         );
-
-
       doc.text(
         nameLines,
         17,
         y + 5
       );
-
-
       doc.text(
         String(
           product.quantity
@@ -2235,8 +1582,6 @@ function createPDF(){
         94,
         y + 5
       );
-
-
       doc.text(
         money(
           product.grossPrice
@@ -2244,8 +1589,6 @@ function createPDF(){
         108,
         y + 5
       );
-
-
       doc.text(
         money(
           product.netPrice
@@ -2253,8 +1596,6 @@ function createPDF(){
         134,
         y + 5
       );
-
-
       doc.text(
         money(
           product.vat
@@ -2262,8 +1603,6 @@ function createPDF(){
         157,
         y + 5
       );
-
-
       doc.text(
         money(
           product.grossTotal
@@ -2271,52 +1610,35 @@ function createPDF(){
         174,
         y + 5
       );
-
-
       doc.setDrawColor(
         225,
         229,
         222
       );
-
-
       doc.line(
         15,
         y + rowHeight,
         195,
         y + rowHeight
       );
-
-
       y += rowHeight;
-
     }
   );
-
-
   y += 8;
-
-
-  /* TOTALES */
-
+  /* =====================================================
+     TOTALES
+  ====================================================== */
   const totalsX = 130;
-
-
   doc.setFontSize(9);
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
   doc.text(
     "Subtotal sin IVA:",
     totalsX,
     y
   );
-
-
   doc.text(
     money(
       data.netSubtotal
@@ -2327,18 +1649,12 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y += 6;
-
-
   doc.text(
     "Descuento:",
     totalsX,
     y
   );
-
-
   doc.text(
     money(
       data.grossDiscount
@@ -2349,18 +1665,12 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y += 6;
-
-
   doc.text(
     "Base imponible:",
     totalsX,
     y
   );
-
-
   doc.text(
     money(
       data.taxableBase
@@ -2371,18 +1681,12 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y += 6;
-
-
   doc.text(
     "IVA 21%:",
     totalsX,
     y
   );
-
-
   doc.text(
     money(
       data.vatTotal
@@ -2393,27 +1697,17 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y += 9;
-
-
   doc.setFont(
     undefined,
     "bold"
   );
-
-
   doc.setFontSize(12);
-
-
   doc.text(
     "TOTAL:",
     totalsX,
     y
   );
-
-
   doc.text(
     money(
       data.grossTotal
@@ -2424,104 +1718,70 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   y += 12;
-
-
-  /* OBSERVACIONES */
-
+  /* =====================================================
+     OBSERVACIONES
+  ====================================================== */
   if(data.notes){
-
     doc.setFontSize(10);
-
     doc.setFont(
       undefined,
       "bold"
     );
-
-
     doc.text(
       "OBSERVACIONES",
       15,
       y
     );
-
-
     y += 6;
-
-
     doc.setFontSize(8.5);
-
     doc.setFont(
       undefined,
       "normal"
     );
-
-
     const noteLines =
       doc.splitTextToSize(
         data.notes,
         180
       );
-
-
     doc.text(
       noteLines,
       15,
       y
     );
-
-
     y +=
       noteLines.length *
       4 + 7;
-
   }
-
-
-  /* NOTA LEGAL */
-
+  /* =====================================================
+     NOTA LEGAL
+  ====================================================== */
   if(
     data.type ===
     "presupuesto"
   ){
-
     const legal =
       "Este presupuesto no es una factura. La factura correspondiente a la operación se emitirá una vez se realice el pago.";
-
-
     const legalLines =
       doc.splitTextToSize(
         legal,
         170
       );
-
-
     const legalHeight =
       legalLines.length *
       4 + 10;
-
-
     if(
       y + legalHeight >
       pageHeight - 15
     ){
-
       doc.addPage();
-
       y = 20;
-
     }
-
-
     doc.setFillColor(
       245,
       247,
       242
     );
-
-
     doc.roundedRect(
       15,
       y,
@@ -2531,60 +1791,42 @@ function createPDF(){
       2,
       "F"
     );
-
-
     doc.setTextColor(
       23,
       59,
       0
     );
-
-
     doc.setFontSize(8);
-
     doc.setFont(
       undefined,
       "bold"
     );
-
-
     doc.text(
       legalLines,
       19,
       y + 6
     );
-
-
     y +=
       legalHeight + 8;
-
   }
-
-
-  /* PIE */
-
+  /* =====================================================
+     PIE
+  ====================================================== */
   doc.setTextColor(
     112,
     119,
     108
   );
-
-
   doc.setFontSize(7.5);
-
   doc.setFont(
     undefined,
     "normal"
   );
-
-
   doc.text(
     "El Bolsillo Mágico 3D",
     15,
     pageHeight - 10
   );
-
-
   doc.text(
     data.title,
     pageWidth - 15,
@@ -2593,642 +1835,390 @@ function createPDF(){
       align:"right"
     }
   );
-
-
   return doc;
-
 }
-
-
 /* =========================================================
    DESCARGAR PDF
 ========================================================= */
-
 function downloadPDF(){
-
   if(!validateDocument()){
     return;
   }
-
-
-  const data =
-    getDocumentData();
-
-
-  const doc =
-    createPDF();
-
-
-  const filename =
-    data.type === "factura"
-      ? `Factura-${data.number}.pdf`
-      : `Presupuesto-${data.number}.pdf`;
-
-
-  doc.save(filename);
-
-
-  showStatus(
-    "PDF generado correctamente.",
-    "success"
-  );
-
+  /*
+    Comprobar que jsPDF se ha cargado.
+  */
+  if(
+    !window.jspdf ||
+    typeof window.jspdf.jsPDF !== "function"
+  ){
+    showStatus(
+      "No se ha podido cargar el generador de PDF. Comprueba tu conexión a Internet y vuelve a cargar la página.",
+      "error"
+    );
+    console.error(
+      "jsPDF no está disponible:",
+      window.jspdf
+    );
+    return;
+  }
+  try{
+    /*
+      Obtener datos
+    */
+    const data =
+      getDocumentData();
+    /*
+      Crear PDF
+    */
+    const doc =
+      createPDF();
+    /*
+      Nombre del archivo
+    */
+    let filename;
+    if(data.type === "factura"){
+      filename =
+        `Factura-${data.number}.pdf`;
+    }else{
+      filename =
+        `Presupuesto-${data.number}.pdf`;
+    }
+    /*
+      Descargar
+    */
+    doc.save(
+      filename
+    );
+    /*
+      Guardar formulario
+    */
+    saveForm();
+    /*
+      Mensaje
+    */
+    showStatus(
+      `PDF generado correctamente: ${filename}`,
+      "success"
+    );
+  }catch(error){
+    console.error(
+      "Error al generar el PDF:",
+      error
+    );
+    showStatus(
+      "Ha ocurrido un error al generar el PDF. Revisa la consola del navegador.",
+      "error"
+    );
+  }
 }
-
-
 /* =========================================================
    EMAIL
+     
+   LO DEJAMOS PREPARADO PARA MÁS ADELANTE
 ========================================================= */
-
-async function sendEmail(
-  recipient
-){
-
-  if(!validateDocument()){
-    return;
-  }
-
-
-  const data =
-    getDocumentData();
-
-
-  if(
-    !EMAILJS_PUBLIC_KEY ||
-    EMAILJS_PUBLIC_KEY ===
-    "TU_PUBLIC_KEY"
-  ){
-
-    showStatus(
-      "Primero debes configurar EmailJS en el código.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  const doc =
-    createPDF();
-
-
-  const pdfData =
-    doc.output(
-      "datauristring"
-    );
-
-
-  const documentName =
-    data.type === "factura"
-      ? `Factura-${data.number}.pdf`
-      : `Presupuesto-${data.number}.pdf`;
-
-
-  const templateParams = {
-
-    to_email:
-      recipient,
-
-    client_email:
-      data.client.email,
-
-    client_name:
-      data.client.name,
-
-    document_type:
-      data.title,
-
-    document_number:
-      data.number,
-
-    invoice_number:
-      data.number,
-
-    document_date:
-      formatDate(
-        data.date
-      ),
-
-    total:
-      money(
-        data.grossTotal
-      ),
-
-    attachment:
-      pdfData,
-
-    filename:
-      documentName
-
-  };
-
-
-  try{
-
-    showStatus(
-      "Enviando documento...",
-      "success"
-    );
-
-
-    await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      templateParams
-    );
-
-
-    showStatus(
-      "Documento enviado correctamente.",
-      "success"
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-
-    showStatus(
-      "No se ha podido enviar el documento. Revisa la configuración de EmailJS.",
-      "error"
-    );
-
-  }
-
+async function sendEmail(recipient){
+  showStatus(
+    "El envío por correo lo configuraremos más adelante.",
+    "error"
+  );
 }
-
-
 /* =========================================================
    ENVIAR AL CLIENTE
 ========================================================= */
-
 function sendToClient(){
-
   const email =
     document.getElementById(
       "clientEmail"
     ).value.trim();
-
-
   if(!email){
-
     showStatus(
       "El cliente no tiene email. Puedes generar el PDF y enviárselo manualmente.",
       "error"
     );
-
     return;
-
   }
-
-
   sendEmail(email);
-
 }
-
-
 /* =========================================================
    ENVIAR A MI CORREO
 ========================================================= */
-
 function sendToMe(){
-
-  sendEmail(
-    MY_EMAIL
+  showStatus(
+    "El envío por correo lo configuraremos más adelante.",
+    "error"
   );
-
 }
-
-
 /* =========================================================
    NUEVO DOCUMENTO
 ========================================================= */
-
 function newDocument(){
-
   const currentType =
     document.getElementById(
       "documentType"
     ).value;
-
-
   incrementDocumentNumber();
-
-
   clearForm(false);
-
-
   document.getElementById(
     "documentType"
   ).value =
     currentType;
-
-
   document.getElementById(
     "documentDate"
   ).value =
     today();
-
-
   updateDocumentNumber();
-
   updateLegalNote();
-
-
-  addProduct();
-
-
+  /*
+    clearForm ya crea una línea.
+  */
   calculateTotals();
-
   saveForm();
-
-
   showStatus(
     "Nuevo documento preparado.",
     "success"
   );
-
 }
-
-
 /* =========================================================
    LIMPIAR
 ========================================================= */
-
 function clearForm(
   showMessage = true
 ){
-
   document.getElementById(
     "clientName"
   ).value = "";
-
-
   document.getElementById(
     "clientNif"
   ).value = "";
-
-
   document.getElementById(
     "clientAddress"
   ).value = "";
-
-
   document.getElementById(
     "clientPhone"
   ).value = "";
-
-
   document.getElementById(
     "clientEmail"
   ).value = "";
-
-
   document.getElementById(
     "discount"
   ).value = "0";
-
-
   document.getElementById(
     "notes"
   ).value = "";
-
-
   document.getElementById(
     "productsBody"
   ).innerHTML = "";
-
-
   addProduct();
-
-
   calculateTotals();
-
-
   if(showMessage){
-
     showStatus(
       "Formulario limpiado.",
       "success"
     );
-
   }
-
 }
-
-
 /* =========================================================
    GUARDAR
 ========================================================= */
-
 function saveForm(){
-
   const data = {
-
     documentType:
       document.getElementById(
         "documentType"
       ).value,
-
     documentDate:
       document.getElementById(
         "documentDate"
       ).value,
-
     companyName:
       document.getElementById(
         "companyName"
       ).value,
-
     companyNif:
       document.getElementById(
         "companyNif"
       ).value,
-
     companyAddress:
       document.getElementById(
         "companyAddress"
       ).value,
-
     clientName:
       document.getElementById(
         "clientName"
       ).value,
-
     clientNif:
       document.getElementById(
         "clientNif"
       ).value,
-
     clientAddress:
       document.getElementById(
         "clientAddress"
       ).value,
-
     clientPhone:
       document.getElementById(
         "clientPhone"
       ).value,
-
     clientEmail:
       document.getElementById(
         "clientEmail"
       ).value,
-
     discount:
       document.getElementById(
         "discount"
       ).value,
-
     notes:
       document.getElementById(
         "notes"
       ).value,
-
     products:
       getProducts()
-
   };
-
-
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(data)
   );
-
 }
-
-
 /* =========================================================
    CARGAR
 ========================================================= */
-
 function loadForm(){
-
   const saved =
     localStorage.getItem(
       STORAGE_KEY
     );
-
-
   if(!saved){
     return;
   }
-
-
   try{
-
     const data =
       JSON.parse(saved);
-
-
     if(data.documentType){
-
       document.getElementById(
         "documentType"
       ).value =
         data.documentType;
-
     }
-
-
     if(data.documentDate){
-
       document.getElementById(
         "documentDate"
       ).value =
         data.documentDate;
-
     }
-
-
     if(data.companyName !== undefined){
-
       document.getElementById(
         "companyName"
       ).value =
         data.companyName;
-
     }
-
-
     if(data.companyNif !== undefined){
-
       document.getElementById(
         "companyNif"
       ).value =
         data.companyNif;
-
     }
-
-
     if(data.companyAddress !== undefined){
-
       document.getElementById(
         "companyAddress"
       ).value =
         data.companyAddress;
-
     }
-
-
     if(data.clientName !== undefined){
-
       document.getElementById(
         "clientName"
       ).value =
         data.clientName;
-
     }
-
-
     if(data.clientNif !== undefined){
-
       document.getElementById(
         "clientNif"
       ).value =
         data.clientNif;
-
     }
-
-
     if(data.clientAddress !== undefined){
-
       document.getElementById(
         "clientAddress"
       ).value =
         data.clientAddress;
-
     }
-
-
     if(data.clientPhone !== undefined){
-
       document.getElementById(
         "clientPhone"
       ).value =
         data.clientPhone;
-
     }
-
-
     if(data.clientEmail !== undefined){
-
       document.getElementById(
         "clientEmail"
       ).value =
         data.clientEmail;
-
     }
-
-
     if(data.discount !== undefined){
-
       document.getElementById(
         "discount"
       ).value =
         data.discount;
-
     }
-
-
     if(data.notes !== undefined){
-
       document.getElementById(
         "notes"
       ).value =
         data.notes;
-
     }
-
-
     if(
       Array.isArray(
         data.products
       )
     ){
-
       const tbody =
         document.getElementById(
           "productsBody"
         );
-
-
       tbody.innerHTML = "";
-
-
       data.products.forEach(
         product => {
-
           addProduct({
             name:
               product.name,
-
             quantity:
               product.quantity,
-
             grossPrice:
               product.grossPrice
-
           });
-
         }
       );
-
     }
-
   }catch(error){
-
     console.warn(
       "No se pudieron cargar los datos guardados.",
       error
     );
-
   }
-
 }
-
-
 /* =========================================================
    STATUS
 ========================================================= */
-
 function showStatus(
   message,
   type
 ){
-
   const status =
     document.getElementById(
       "status"
     );
-
-
   status.textContent =
     message;
-
-
   status.className =
     "status " + type;
-
-
   window.scrollTo({
     top:
       document.body.scrollHeight,
     behavior:"smooth"
   });
-
 }
-
-
 /* =========================================================
    ESCAPAR HTML
 ========================================================= */
-
 function escapeHtml(value){
-
   return String(
     value || ""
   )
@@ -3252,10 +2242,7 @@ function escapeHtml(value){
     /'/g,
     "&#039;"
   );
-
 }
-
 </script>
-
 </body>
 </html>
