@@ -298,11 +298,18 @@ button{
         <label for="documentNumber">
           Número
         </label>
+        <!--
+          AHORA ES EDITABLE.
+          Puedes escribir cualquier número.
+        -->
         <input
           id="documentNumber"
           type="text"
-          readonly
+          placeholder="Introduce el número"
         >
+        <span class="help">
+          Puedes modificar manualmente el número de factura.
+        </span>
       </div>
       <div class="field">
         <label for="documentDate">
@@ -416,7 +423,10 @@ button{
   ====================================================== -->
   <div class="card">
     <h2>Productos / Servicios</h2>
-    <div class="help" style="margin-bottom:14px;">
+    <div
+      class="help"
+      style="margin-bottom:14px;"
+    >
       Introduce siempre el
       <strong>precio unitario con IVA incluido</strong>.
       El sistema calculará automáticamente:
@@ -557,7 +567,9 @@ button{
       class="legal-note"
       style="display:none;"
     >
-      Este presupuesto no es una factura. La factura correspondiente a la operación se emitirá una vez se realice el pago.
+      Este presupuesto no es una factura.
+      La factura correspondiente a la operación
+      se emitirá una vez se realice el pago.
     </div>
   </div>
   <!-- =====================================================
@@ -610,14 +622,10 @@ button{
 </div>
 <!-- =====================================================
      EMAILJS
-     
-     LO DEJAMOS PREPARADO PARA MÁS ADELANTE
 ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <!-- =====================================================
      JSPDF
-     
-     VERSIÓN CORREGIDA
 ====================================================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -625,12 +633,12 @@ button{
    CONFIGURACIÓN
 ========================================================= */
 const VAT_RATE = 0.21;
-/*
-  EmailJS lo configuraremos más adelante.
-*/
-const EMAILJS_PUBLIC_KEY = "TU_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID = "TU_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "TU_TEMPLATE_ID";
+const EMAILJS_PUBLIC_KEY =
+  "TU_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID =
+  "TU_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID =
+  "TU_TEMPLATE_ID";
 const MY_EMAIL =
   "elbolsillomagico3d@gmail.com";
 const STORAGE_KEY =
@@ -641,10 +649,6 @@ const STORAGE_KEY =
 document.addEventListener(
   "DOMContentLoaded",
   () => {
-    /*
-      Intentar inicializar EmailJS.
-      No afecta al funcionamiento del PDF.
-    */
     try{
       if(
         typeof emailjs !== "undefined" &&
@@ -661,20 +665,10 @@ document.addEventListener(
         error
       );
     }
-    /*
-      Fecha actual
-    */
     document.getElementById(
       "documentDate"
     ).value = today();
-    /*
-      Cargar datos guardados
-    */
     loadForm();
-    /*
-      Si no hay productos,
-      crear uno automáticamente.
-    */
     if(
       !document.getElementById(
         "productsBody"
@@ -683,20 +677,12 @@ document.addEventListener(
       addProduct();
     }
     /*
-      Número del documento
+      Solo genera el número si el campo
+      está vacío.
     */
     updateDocumentNumber();
-    /*
-      Cálculos
-    */
     calculateTotals();
-    /*
-      Nota legal
-    */
     updateLegalNote();
-    /*
-      Detectar cambios
-    */
     document.addEventListener(
       "input",
       (e) => {
@@ -710,14 +696,15 @@ document.addEventListener(
         }
       }
     );
-    /*
-      Cambio factura / presupuesto
-    */
     document.getElementById(
       "documentType"
     ).addEventListener(
       "change",
       () => {
+        /*
+          Al cambiar entre factura y presupuesto
+          no se borra el número que has escrito.
+        */
         updateDocumentNumber();
         updateLegalNote();
         calculateTotals();
@@ -1109,10 +1096,14 @@ function getDocumentData(){
       type === "factura"
         ? "FACTURA"
         : "PRESUPUESTO",
+    /*
+      AQUÍ SE UTILIZA EL NÚMERO
+      QUE TÚ HAYAS ESCRITO.
+    */
     number:
       document.getElementById(
         "documentNumber"
-      ).value,
+      ).value.trim(),
     date:
       document.getElementById(
         "documentDate"
@@ -1171,6 +1162,20 @@ function getDocumentData(){
    NUMERACIÓN
 ========================================================= */
 function updateDocumentNumber(){
+  const input =
+    document.getElementById(
+      "documentNumber"
+    );
+  /*
+    MUY IMPORTANTE:
+    Si ya hay un número escrito,
+    NO lo sustituimos.
+  */
+  if(
+    input.value.trim() !== ""
+  ){
+    return;
+  }
   const type =
     document.getElementById(
       "documentType"
@@ -1199,9 +1204,7 @@ function updateDocumentNumber(){
     type === "factura"
       ? ""
       : "PRES-";
-  document.getElementById(
-    "documentNumber"
-  ).value =
+  input.value =
     prefix +
     year +
     "-" +
@@ -1263,6 +1266,17 @@ function validateDocument(){
     document.getElementById(
       "clientName"
     ).value.trim();
+  const documentNumber =
+    document.getElementById(
+      "documentNumber"
+    ).value.trim();
+  if(!documentNumber){
+    showStatus(
+      "Debes introducir el número de factura o presupuesto.",
+      "error"
+    );
+    return false;
+  }
   if(!clientName){
     showStatus(
       "Debes introducir el nombre o razón social del cliente.",
@@ -1276,9 +1290,6 @@ function validateDocument(){
    CREAR PDF
 ========================================================= */
 function createPDF(){
-  /*
-    Comprobar que jsPDF está disponible.
-  */
   if(
     !window.jspdf ||
     typeof window.jspdf.jsPDF !== "function"
@@ -1547,9 +1558,6 @@ function createPDF(){
     undefined,
     "normal"
   );
-  /*
-    Productos
-  */
   data.products.forEach(
     product => {
       if(
@@ -1844,9 +1852,6 @@ function downloadPDF(){
   if(!validateDocument()){
     return;
   }
-  /*
-    Comprobar que jsPDF se ha cargado.
-  */
   if(
     !window.jspdf ||
     typeof window.jspdf.jsPDF !== "function"
@@ -1862,19 +1867,10 @@ function downloadPDF(){
     return;
   }
   try{
-    /*
-      Obtener datos
-    */
     const data =
       getDocumentData();
-    /*
-      Crear PDF
-    */
     const doc =
       createPDF();
-    /*
-      Nombre del archivo
-    */
     let filename;
     if(data.type === "factura"){
       filename =
@@ -1883,18 +1879,13 @@ function downloadPDF(){
       filename =
         `Presupuesto-${data.number}.pdf`;
     }
-    /*
-      Descargar
-    */
     doc.save(
       filename
     );
-    /*
-      Guardar formulario
-    */
     saveForm();
     /*
-      Mensaje
+      Después de generar el PDF,
+      dejamos guardado el número manual.
     */
     showStatus(
       `PDF generado correctamente: ${filename}`,
@@ -1913,8 +1904,6 @@ function downloadPDF(){
 }
 /* =========================================================
    EMAIL
-     
-   LO DEJAMOS PREPARADO PARA MÁS ADELANTE
 ========================================================= */
 async function sendEmail(recipient){
   showStatus(
@@ -1956,7 +1945,14 @@ function newDocument(){
     document.getElementById(
       "documentType"
     ).value;
+  /*
+    Incrementamos el contador interno.
+  */
   incrementDocumentNumber();
+  /*
+    Limpiamos los datos del cliente,
+    productos, etc.
+  */
   clearForm(false);
   document.getElementById(
     "documentType"
@@ -1966,11 +1962,16 @@ function newDocument(){
     "documentDate"
   ).value =
     today();
+  /*
+    IMPORTANTE:
+    Vaciamos primero el número para que
+    se genere el siguiente automáticamente.
+  */
+  document.getElementById(
+    "documentNumber"
+  ).value = "";
   updateDocumentNumber();
   updateLegalNote();
-  /*
-    clearForm ya crea una línea.
-  */
   calculateTotals();
   saveForm();
   showStatus(
@@ -2025,6 +2026,14 @@ function saveForm(){
     documentType:
       document.getElementById(
         "documentType"
+      ).value,
+    /*
+      GUARDAMOS TAMBIÉN EL NÚMERO
+      QUE HAYAS ESCRITO MANUALMENTE.
+    */
+    documentNumber:
+      document.getElementById(
+        "documentNumber"
       ).value,
     documentDate:
       document.getElementById(
@@ -2097,6 +2106,19 @@ function loadForm(){
         "documentType"
       ).value =
         data.documentType;
+    }
+    /*
+      CARGAMOS EL NÚMERO GUARDADO.
+    */
+    if(
+      data.documentNumber !== undefined &&
+      data.documentNumber !== null &&
+      data.documentNumber !== ""
+    ){
+      document.getElementById(
+        "documentNumber"
+      ).value =
+        data.documentNumber;
     }
     if(data.documentDate){
       document.getElementById(
