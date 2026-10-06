@@ -3,2268 +3,2505 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Generador de facturas y presupuestos - El Bolsillo Mágico 3D">
-<title>El Bolsillo Mágico 3D | Facturas y Presupuestos</title>
+
+<title>El Bolsillo Mágico 3D - Facturas y Ventas</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-:root{
-  --green:#173b00;
-  --green-dark:#0d2500;
-  --green-light:#2f650d;
-  --cream:#f7f6f0;
-  --white:#ffffff;
-  --text:#171b15;
-  --muted:#70776c;
-  --line:#e2e5de;
-  --danger:#b42318;
-  --success:#167c35;
-  --radius:18px;
-  --shadow:0 10px 30px rgba(0,0,0,.08);
+:root {
+    --primary: #6c4cff;
+    --primary-dark: #5035c8;
+    --secondary: #ff7a59;
+    --success: #22a06b;
+    --danger: #d64545;
+    --bg: #f4f5f9;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #777;
+    --border: #ddd;
 }
-*{
-  box-sizing:border-box;
+
+* {
+    box-sizing: border-box;
 }
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--cream);
-  color:var(--text);
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
 }
-header{
-  background:linear-gradient(135deg,var(--green-dark),var(--green));
-  color:white;
-  padding:25px 20px;
+
+header {
+    background: linear-gradient(135deg, var(--primary), #8d6cff);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
 }
-.header-inner{
-  max-width:1200px;
-  margin:auto;
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
 }
-header h1{
-  margin:0;
-  font-size:28px;
+
+header p {
+    margin: 0;
+    opacity: .9;
 }
-header p{
-  margin:7px 0 0;
-  opacity:.85;
+
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 15px;
 }
-.container{
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 16px 50px;
+
+.card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.07);
 }
-.card{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:22px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow);
+
+.card h2 {
+    margin-top: 0;
+    color: var(--primary-dark);
 }
-.card h2{
-  margin:0 0 18px;
-  color:var(--green);
-  font-size:20px;
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
 }
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
 }
-.field.full{
-  grid-column:1/-1;
-}
-label{
-  font-weight:700;
-  font-size:14px;
-}
+
 input,
-textarea,
-select{
-  width:100%;
-  padding:12px 13px;
-  border:1px solid #d7dbd3;
-  border-radius:11px;
-  font-size:15px;
-  outline:none;
-  background:#fff;
+select,
+textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    background: white;
 }
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
 input:focus,
-textarea:focus,
-select:focus{
-  border-color:var(--green-light);
-  box-shadow:0 0 0 3px rgba(47,101,13,.10);
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
 }
-textarea{
-  min-height:90px;
-  resize:vertical;
+
+.table-wrapper {
+    overflow-x: auto;
 }
-.help{
-  color:var(--muted);
-  font-size:12px;
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
 }
-.optional{
-  color:var(--muted);
-  font-weight:400;
+
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
 }
-.company-box{
-  background:#f4f7f1;
-  border:1px solid #dce5d7;
-  border-radius:14px;
-  padding:18px;
+
+th {
+    background: #f3f1ff;
+    color: var(--primary-dark);
 }
-.company-box strong{
-  color:var(--green);
+
+td input,
+td select {
+    min-width: 100px;
 }
-.products-wrapper{
-  overflow-x:auto;
+
+.right {
+    text-align: right;
 }
-.products-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:950px;
+
+.center {
+    text-align: center;
 }
-.products-table th{
-  background:var(--green);
-  color:white;
-  padding:11px 8px;
-  text-align:left;
-  font-size:13px;
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
 }
-.products-table td{
-  border-bottom:1px solid var(--line);
-  padding:9px 7px;
-  vertical-align:middle;
+
+button:hover {
+    transform: translateY(-1px);
+    opacity: .95;
 }
-.products-table input{
-  padding:9px;
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
 }
-.products-table .qty{
-  width:80px;
+
+.btn-secondary {
+    background: #ece9ff;
+    color: var(--primary-dark);
 }
-.products-table .price{
-  width:130px;
+
+.btn-success {
+    background: var(--success);
+    color: white;
 }
-.products-table .readonly-price{
-  background:#f2f5ef;
-  font-weight:700;
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
 }
-.products-table .money-cell{
-  white-space:nowrap;
-  font-weight:700;
+
+.btn-orange {
+    background: var(--secondary);
+    color: white;
 }
-.btn-delete{
-  border:0;
-  background:#fff1f0;
-  color:var(--danger);
-  border-radius:9px;
-  padding:9px 11px;
-  cursor:pointer;
-  font-weight:700;
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
 }
-.btn-delete:hover{
-  background:#ffe2df;
+
+.totals {
+    max-width: 500px;
+    margin-left: auto;
+    margin-top: 20px;
 }
-.add-row{
-  margin-top:14px;
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
 }
-button{
-  border:0;
-  border-radius:11px;
-  padding:12px 17px;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
+
+.total-final {
+    font-size: 21px;
+    font-weight: bold;
+    color: var(--primary-dark);
+    border-bottom: none;
 }
-.btn-primary{
-  background:var(--green);
-  color:white;
+
+.platform-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
 }
-.btn-primary:hover{
-  background:var(--green-dark);
+
+.summary-box {
+    background: #f7f6ff;
+    border: 1px solid #e4e0ff;
+    border-radius: 10px;
+    padding: 16px;
 }
-.btn-secondary{
-  background:#edf1e9;
-  color:var(--green);
+
+.summary-box strong {
+    display: block;
+    font-size: 20px;
+    margin-top: 5px;
 }
-.btn-danger{
-  background:#fff0ef;
-  color:var(--danger);
+
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: var(--muted);
 }
-.btn-blue{
-  background:#eaf1ff;
-  color:#174ea6;
+
+.small {
+    font-size: 13px;
+    color: var(--muted);
 }
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
+
+.badge {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
 }
-.totals{
-  max-width:480px;
-  margin-left:auto;
-  margin-top:20px;
+
+.badge-wallapop {
+    background: #e8f7ef;
+    color: #15824f;
 }
-.total-row{
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  padding:9px 0;
-  border-bottom:1px solid var(--line);
+
+.badge-vinted {
+    background: #ffeef5;
+    color: #b52d64;
 }
-.total-row span:last-child{
-  font-weight:700;
-  white-space:nowrap;
+
+.badge-other {
+    background: #eee;
+    color: #555;
 }
-.total-final{
-  font-size:21px;
-  color:var(--green);
-  border-bottom:0;
-  padding-top:15px;
+
+.info {
+    background: #f0f6ff;
+    border-left: 4px solid #4385e5;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 14px;
 }
-.status{
-  margin-top:15px;
-  padding:12px 14px;
-  border-radius:10px;
-  display:none;
-  font-size:14px;
+
+.warning {
+    background: #fff8e8;
+    border-left: 4px solid #f0a400;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 14px;
 }
-.status.success{
-  display:block;
-  background:#eaf7ed;
-  color:var(--success);
-}
-.status.error{
-  display:block;
-  background:#fff0ef;
-  color:var(--danger);
-}
-.legal-note{
-  margin-top:18px;
-  padding:14px;
-  border-left:4px solid var(--green);
-  background:#f5f7f2;
-  border-radius:8px;
-  font-size:13px;
-  line-height:1.5;
-}
-@media(max-width:800px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-  .card{
-    padding:17px;
-  }
-  header h1{
-    font-size:23px;
-  }
-  .totals{
-    max-width:none;
-  }
+
+@media (max-width: 800px) {
+
+    .grid,
+    .grid-3,
+    .platform-summary {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 22px;
+    }
+
+    .card {
+        padding: 15px;
+    }
 }
 </style>
 </head>
+
 <body>
+
 <header>
-  <div class="header-inner">
     <h1>El Bolsillo Mágico 3D</h1>
-    <p>Generador de facturas y presupuestos</p>
-  </div>
+    <p>Generador de facturas, presupuestos y ventas de plataformas</p>
 </header>
+
 <div class="container">
-  <!-- =====================================================
-       TIPO DE DOCUMENTO
-  ====================================================== -->
-  <div class="card">
-    <h2>Documento</h2>
+
+<!-- ========================================================= -->
+<!-- DATOS DE LA EMPRESA -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>Datos del documento</h2>
+
     <div class="grid">
-      <div class="field">
-        <label for="documentType">
-          Tipo de documento
-        </label>
-        <select id="documentType">
-          <option value="factura">
-            Factura
-          </option>
-          <option value="presupuesto">
-            Presupuesto
-          </option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="documentNumber">
-          Número
-        </label>
-        <!--
-          AHORA ES EDITABLE.
-          Puedes escribir cualquier número.
-        -->
-        <input
-          id="documentNumber"
-          type="text"
-          placeholder="Introduce el número"
-        >
-        <span class="help">
-          Puedes modificar manualmente el número de factura.
-        </span>
-      </div>
-      <div class="field">
-        <label for="documentDate">
-          Fecha
-        </label>
-        <input
-          id="documentDate"
-          type="date"
-        >
-      </div>
-    </div>
-  </div>
-  <!-- =====================================================
-       DATOS DE FACTURACIÓN
-  ====================================================== -->
-  <div class="card">
-    <h2>Datos de facturación</h2>
-    <div class="company-box">
-      <div class="grid">
-        <div class="field">
-          <label for="companyName">
-            Nombre / Razón social
-          </label>
-          <input
-            id="companyName"
-            value="Almudena Vázquez Camarena"
-          >
+
+        <div>
+            <label>Tipo de documento</label>
+
+            <select id="documentType">
+                <option value="factura">Factura</option>
+                <option value="presupuesto">Presupuesto</option>
+            </select>
         </div>
-        <div class="field">
-          <label for="companyNif">
-            NIF
-          </label>
-          <input
-            id="companyNif"
-            value="49122806G"
-          >
+
+        <div>
+            <label>Número</label>
+            <input type="text" id="documentNumber">
         </div>
-        <div class="field full">
-          <label for="companyAddress">
-            Dirección
-          </label>
-          <input
-            id="companyAddress"
-            value="Carretera A8126 Morón-Coripe km 3, Venta Espartero, Morón de la Frontera, Sevilla"
-          >
+
+        <div>
+            <label>Fecha</label>
+            <input type="date" id="documentDate">
         </div>
-      </div>
+
     </div>
-  </div>
-  <!-- =====================================================
-       CLIENTE
-  ====================================================== -->
-  <div class="card">
-    <h2>Datos del cliente</h2>
-    <div class="grid">
-      <div class="field">
-        <label for="clientName">
-          Nombre / Razón social
-        </label>
-        <input
-          id="clientName"
-          placeholder="Nombre del cliente"
-        >
-      </div>
-      <div class="field">
-        <label for="clientNif">
-          NIF / DNI
-          <span class="optional">(opcional)</span>
-        </label>
-        <input
-          id="clientNif"
-          placeholder="Opcional"
-        >
-      </div>
-      <div class="field full">
-        <label for="clientAddress">
-          Dirección
-          <span class="optional">(opcional)</span>
-        </label>
-        <input
-          id="clientAddress"
-          placeholder="Dirección del cliente"
-        >
-      </div>
-      <div class="field">
-        <label for="clientPhone">
-          Teléfono
-          <span class="optional">(opcional)</span>
-        </label>
-        <input
-          id="clientPhone"
-          type="tel"
-          placeholder="Opcional"
-        >
-      </div>
-      <div class="field">
-        <label for="clientEmail">
-          Email
-          <span class="optional">(opcional)</span>
-        </label>
-        <input
-          id="clientEmail"
-          type="email"
-          placeholder="Opcional"
-        >
-      </div>
-    </div>
-  </div>
-  <!-- =====================================================
-       PRODUCTOS
-  ====================================================== -->
-  <div class="card">
-    <h2>Productos / Servicios</h2>
-    <div
-      class="help"
-      style="margin-bottom:14px;"
-    >
-      Introduce siempre el
-      <strong>precio unitario con IVA incluido</strong>.
-      El sistema calculará automáticamente:
-      precio sin IVA + IVA del 21%.
-    </div>
-    <div class="products-wrapper">
-      <table class="products-table">
-        <thead>
-          <tr>
-            <th>
-              Producto / Servicio
-            </th>
-            <th>
-              Cant.
-            </th>
-            <th>
-              Precio unitario<br>
-              IVA incluido
-            </th>
-            <th>
-              Precio unitario<br>
-              sin IVA
-            </th>
-            <th>
-              IVA
-            </th>
-            <th>
-              Total<br>
-              IVA incluido
-            </th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="productsBody"></tbody>
-      </table>
-    </div>
-    <div class="add-row">
-      <button
-        type="button"
-        class="btn-secondary"
-        onclick="addProduct()"
-      >
-        + Añadir producto
-      </button>
-    </div>
-  </div>
-  <!-- =====================================================
-       DESCUENTO
-  ====================================================== -->
-  <div class="card">
-    <h2>Descuento</h2>
-    <div class="grid">
-      <div class="field">
-        <label for="discount">
-          Descuento IVA incluido
-        </label>
-        <input
-          id="discount"
-          type="number"
-          min="0"
-          step="0.01"
-          value="0"
-          placeholder="0,00"
-        >
-        <span class="help">
-          Introduce el descuento con IVA incluido.
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- =====================================================
-       TOTALES
-  ====================================================== -->
-  <div class="card">
-    <h2>Totales</h2>
-    <div class="totals">
-      <div class="total-row">
-        <span>
-          Subtotal sin IVA
-        </span>
-        <span id="subtotalNet">
-          0,00 €
-        </span>
-      </div>
-      <div class="total-row">
-        <span>
-          Descuento
-        </span>
-        <span id="discountDisplay">
-          0,00 €
-        </span>
-      </div>
-      <div class="total-row">
-        <span>
-          Base imponible
-        </span>
-        <span id="taxableBase">
-          0,00 €
-        </span>
-      </div>
-      <div class="total-row">
-        <span>
-          IVA 21%
-        </span>
-        <span id="vatTotal">
-          0,00 €
-        </span>
-      </div>
-      <div class="total-row total-final">
-        <span>
-          TOTAL
-        </span>
-        <span id="grandTotal">
-          0,00 €
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- =====================================================
-       OBSERVACIONES
-  ====================================================== -->
-  <div class="card">
-    <h2>Observaciones</h2>
-    <div class="field">
-      <label for="notes">
-        Notas
-        <span class="optional">
-          (opcional)
-        </span>
-      </label>
-      <textarea
-        id="notes"
-        placeholder="Escribe aquí cualquier observación..."
-      ></textarea>
-    </div>
-    <div
-      id="legalNote"
-      class="legal-note"
-      style="display:none;"
-    >
-      Este presupuesto no es una factura.
-      La factura correspondiente a la operación
-      se emitirá una vez se realice el pago.
-    </div>
-  </div>
-  <!-- =====================================================
-       ACCIONES
-  ====================================================== -->
-  <div class="card">
-    <h2>Acciones</h2>
-    <div class="actions">
-      <button
-        type="button"
-        class="btn-primary"
-        onclick="downloadPDF()"
-      >
-        Generar PDF
-      </button>
-      <button
-        type="button"
-        class="btn-blue"
-        onclick="sendToClient()"
-      >
-        Enviar al cliente
-      </button>
-      <button
-        type="button"
-        class="btn-blue"
-        onclick="sendToMe()"
-      >
-        Enviar a mi correo
-      </button>
-      <button
-        type="button"
-        class="btn-secondary"
-        onclick="newDocument()"
-      >
-        Nuevo documento
-      </button>
-      <button
-        type="button"
-        class="btn-danger"
-        onclick="clearForm()"
-      >
-        Limpiar
-      </button>
-    </div>
-    <div
-      id="status"
-      class="status"
-    ></div>
-  </div>
+
 </div>
-<!-- =====================================================
-     EMAILJS
-====================================================== -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<!-- =====================================================
-     JSPDF
-====================================================== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- ========================================================= -->
+<!-- DATOS EMPRESA -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>Datos del negocio</h2>
+
+    <div class="grid">
+
+        <div>
+            <label>Nombre / Razón social</label>
+            <input
+                type="text"
+                id="companyName"
+                value="Almudena Vázquez Camarena"
+            >
+        </div>
+
+        <div>
+            <label>NIF</label>
+            <input
+                type="text"
+                id="companyNif"
+                value="49122806G"
+            >
+        </div>
+
+        <div style="grid-column:1/-1">
+            <label>Dirección</label>
+            <input
+                type="text"
+                id="companyAddress"
+                value="Carretera A8126 Morón-Coripe km 3, Venta Espartero, Morón de la Frontera, Sevilla"
+            >
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- CLIENTE -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>Datos del cliente</h2>
+
+    <div class="grid">
+
+        <div>
+            <label>Nombre / Razón social</label>
+            <input type="text" id="clientName">
+        </div>
+
+        <div>
+            <label>NIF / CIF</label>
+            <input type="text" id="clientNif">
+        </div>
+
+        <div>
+            <label>Dirección</label>
+            <input type="text" id="clientAddress">
+        </div>
+
+        <div>
+            <label>Teléfono</label>
+            <input type="text" id="clientPhone">
+        </div>
+
+        <div>
+            <label>Email</label>
+            <input type="email" id="clientEmail">
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- PRODUCTOS -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>Productos / servicios</h2>
+
+    <div class="table-wrapper">
+
+        <table id="productsTable">
+
+            <thead>
+
+                <tr>
+                    <th>Producto / servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario IVA incluido</th>
+                    <th>Base unitaria</th>
+                    <th>IVA</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+
+            <tbody id="productsBody"></tbody>
+
+        </table>
+
+    </div>
+
+    <div class="buttons">
+        <button
+            class="btn-secondary"
+            onclick="addProductRow()"
+        >
+            + Añadir producto
+        </button>
+    </div>
+
+    <div class="grid" style="margin-top:20px">
+
+        <div>
+            <label>Descuento total IVA incluido</label>
+            <input
+                type="number"
+                id="discountGross"
+                value="0"
+                min="0"
+                step="0.01"
+                oninput="calculateInvoice()"
+            >
+        </div>
+
+        <div>
+            <label>IVA</label>
+            <input
+                type="text"
+                value="21%"
+                readonly
+            >
+        </div>
+
+    </div>
+
+    <div class="totals">
+
+        <div class="total-row">
+            <span>Subtotal base imponible</span>
+            <strong id="subtotalNet">0,00 €</strong>
+        </div>
+
+        <div class="total-row">
+            <span>Descuento</span>
+            <strong id="discountNet">0,00 €</strong>
+        </div>
+
+        <div class="total-row">
+            <span>Base imponible</span>
+            <strong id="taxableBase">0,00 €</strong>
+        </div>
+
+        <div class="total-row">
+            <span>IVA 21%</span>
+            <strong id="vatTotal">0,00 €</strong>
+        </div>
+
+        <div class="total-row total-final">
+            <span>TOTAL</span>
+            <strong id="grandTotal">0,00 €</strong>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- VENTAS WALLAPOP / VINTED -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>🛍️ Ventas de Wallapop Pro y Vinted Pro</h2>
+
+    <p class="small">
+        Registra aquí las ventas realizadas durante cada mes.
+        El precio se introduce con IVA incluido y el sistema calcula
+        automáticamente la base imponible y el IVA.
+    </p>
+
+    <div class="grid-3">
+
+        <div>
+            <label>Mes</label>
+
+            <input
+                type="month"
+                id="salesMonth"
+            >
+        </div>
+
+        <div>
+            <label>Plataforma</label>
+
+            <select id="salePlatform">
+                <option value="Wallapop Pro">Wallapop Pro</option>
+                <option value="Vinted Pro">Vinted Pro</option>
+                <option value="Otra">Otra</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Fecha de venta</label>
+
+            <input
+                type="date"
+                id="saleDate"
+            >
+        </div>
+
+    </div>
+
+    <div class="grid-3" style="margin-top:15px">
+
+        <div>
+            <label>Producto</label>
+
+            <input
+                type="text"
+                id="saleProduct"
+                placeholder="Ej. Figura personalizada"
+            >
+        </div>
+
+        <div>
+            <label>Precio bruto IVA incluido</label>
+
+            <input
+                type="number"
+                id="saleGross"
+                min="0"
+                step="0.01"
+                placeholder="0,00"
+            >
+        </div>
+
+        <div style="display:flex;align-items:end">
+
+            <button
+                class="btn-success"
+                style="width:100%"
+                onclick="addSale()"
+            >
+                + Añadir venta
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="info">
+        <strong>Ejemplo:</strong>
+        si vendes un producto por 12,10 €, el sistema calcula
+        10,00 € de base imponible + 2,10 € de IVA.
+    </div>
+
+    <div class="table-wrapper" style="margin-top:20px">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>Plataforma</th>
+                    <th>Producto</th>
+                    <th>Base</th>
+                    <th>IVA</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+
+            <tbody id="salesBody"></tbody>
+
+        </table>
+
+    </div>
+
+    <div id="emptySales" class="empty">
+        No hay ventas registradas para este mes.
+    </div>
+
+    <div class="platform-summary">
+
+        <div class="summary-box">
+            <span>Wallapop Pro</span>
+            <strong id="wallapopTotal">0,00 €</strong>
+        </div>
+
+        <div class="summary-box">
+            <span>Vinted Pro</span>
+            <strong id="vintedTotal">0,00 €</strong>
+        </div>
+
+        <div class="summary-box">
+            <span>Otras</span>
+            <strong id="otherTotal">0,00 €</strong>
+        </div>
+
+    </div>
+
+    <div class="totals">
+
+        <div class="total-row">
+            <span>Ventas sin IVA</span>
+            <strong id="salesNet">0,00 €</strong>
+        </div>
+
+        <div class="total-row">
+            <span>IVA ventas</span>
+            <strong id="salesVat">0,00 €</strong>
+        </div>
+
+        <div class="total-row total-final">
+            <span>TOTAL VENTAS</span>
+            <strong id="salesGross">0,00 €</strong>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button
+            class="btn-orange"
+            onclick="generateMonthlyInvoice()"
+        >
+            📄 Generar factura simplificada mensual
+        </button>
+
+        <button
+            class="btn-danger"
+            onclick="deleteMonthSales()"
+        >
+            🗑️ Borrar ventas del mes
+        </button>
+
+    </div>
+
+    <div class="warning">
+        <strong>Importante:</strong>
+        la forma correcta de documentar y agrupar fiscalmente las ventas
+        de plataformas depende de tu situación fiscal y de las condiciones
+        de cada plataforma. Este sistema realiza el cálculo matemático
+        del IVA al 21%, pero conviene confirmar con tu gestoría cómo debe
+        emitirse la factura simplificada mensual.
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- NOTAS -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <h2>Notas</h2>
+
+    <textarea
+        id="notes"
+        placeholder="Notas adicionales..."
+    ></textarea>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- BOTONES -->
+<!-- ========================================================= -->
+
+<div class="card">
+
+    <div class="buttons">
+
+        <button
+            class="btn-primary"
+            onclick="generatePDF()"
+        >
+            📄 Generar PDF
+        </button>
+
+        <button
+            class="btn-secondary"
+            onclick="saveDocument()"
+        >
+            💾 Guardar
+        </button>
+
+        <button
+            class="btn-success"
+            onclick="newDocument()"
+        >
+            ➕ Nuevo documento
+        </button>
+
+        <button
+            class="btn-danger"
+            onclick="clearDocument()"
+        >
+            🗑️ Limpiar
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
 <script>
-/* =========================================================
+
+/* ============================================================
    CONFIGURACIÓN
-========================================================= */
+============================================================ */
+
 const VAT_RATE = 0.21;
-const EMAILJS_PUBLIC_KEY =
-  "TU_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID =
-  "TU_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID =
-  "TU_TEMPLATE_ID";
-const MY_EMAIL =
-  "elbolsillomagico3d@gmail.com";
-const STORAGE_KEY =
-  "bolsillo_magico_documento";
-/* =========================================================
-   INICIO
-========================================================= */
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-    try{
-      if(
-        typeof emailjs !== "undefined" &&
-        EMAILJS_PUBLIC_KEY !== "TU_PUBLIC_KEY"
-      ){
-        emailjs.init({
-          publicKey:
-            EMAILJS_PUBLIC_KEY
-        });
-      }
-    }catch(error){
-      console.warn(
-        "EmailJS todavía no está configurado.",
-        error
-      );
-    }
-    document.getElementById(
-      "documentDate"
-    ).value = today();
-    loadForm();
-    if(
-      !document.getElementById(
-        "productsBody"
-      ).children.length
-    ){
-      addProduct();
-    }
-    /*
-      Solo genera el número si el campo
-      está vacío.
-    */
-    updateDocumentNumber();
-    calculateTotals();
-    updateLegalNote();
-    document.addEventListener(
-      "input",
-      (e) => {
-        if(
-          e.target.matches("input") ||
-          e.target.matches("textarea") ||
-          e.target.matches("select")
-        ){
-          calculateTotals();
-          saveForm();
-        }
-      }
-    );
-    document.getElementById(
-      "documentType"
-    ).addEventListener(
-      "change",
-      () => {
-        /*
-          Al cambiar entre factura y presupuesto
-          no se borra el número que has escrito.
-        */
-        updateDocumentNumber();
-        updateLegalNote();
-        calculateTotals();
-        saveForm();
-      }
-    );
-  }
-);
-/* =========================================================
-   FECHA
-========================================================= */
-function today(){
-  const d =
-    new Date();
-  const year =
-    d.getFullYear();
-  const month =
-    String(
-      d.getMonth()+1
-    ).padStart(2,"0");
-  const day =
-    String(
-      d.getDate()
-    ).padStart(2,"0");
-  return `${year}-${month}-${day}`;
+
+const SALES_STORAGE_KEY = "bolsilloMagico3D_sales";
+
+const DOCUMENT_STORAGE_KEY = "bolsilloMagico3D_document";
+
+let products = [];
+
+
+/* ============================================================
+   UTILIDADES
+============================================================ */
+
+function money(value) {
+
+    return Number(value || 0).toLocaleString("es-ES", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }) + " €";
+
 }
-/* =========================================================
-   FORMATO FECHA
-========================================================= */
-function formatDate(date){
-  if(!date){
-    return "";
-  }
-  const parts =
-    date.split("-");
-  if(parts.length !== 3){
-    return date;
-  }
-  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+
+function round2(value) {
+
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+
 }
-/* =========================================================
-   MONEDA
-========================================================= */
-function money(value){
-  return Number(
-    value || 0
-  ).toLocaleString(
-    "es-ES",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    }
-  ) + " €";
+
+
+function grossToNet(gross) {
+
+    return round2(Number(gross || 0) / (1 + VAT_RATE));
+
 }
-/* =========================================================
-   IVA
-========================================================= */
-function grossToNet(gross){
-  return Number(
-    gross || 0
-  ) / (1 + VAT_RATE);
+
+
+function grossToVat(gross) {
+
+    const net = grossToNet(gross);
+
+    return round2(Number(gross || 0) - net);
+
 }
-function grossToVat(gross){
-  const net =
-    grossToNet(gross);
-  return Number(
-    gross || 0
-  ) - net;
+
+
+function todayISO() {
+
+    const d = new Date();
+
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+
+    return `${d.getFullYear()}-${month}-${day}`;
+
 }
-/* =========================================================
+
+
+function currentMonth() {
+
+    const d = new Date();
+
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+
+    return `${d.getFullYear()}-${month}`;
+
+}
+
+
+/* ============================================================
+   DOCUMENTOS
+============================================================ */
+
+function getNextDocumentNumber(type = "factura") {
+
+    const year = new Date().getFullYear();
+
+    const key = `bolsillo_num_${type}_${year}`;
+
+    let number = parseInt(localStorage.getItem(key) || "0", 10);
+
+    number++;
+
+    localStorage.setItem(key, number);
+
+    const prefix = type === "factura" ? "F" : "P";
+
+    return `${prefix}-${year}-${String(number).padStart(3, "0")}`;
+
+}
+
+
+function initializeDocument() {
+
+    document.getElementById("documentDate").value = todayISO();
+
+    document.getElementById("salesMonth").value = currentMonth();
+
+    document.getElementById("saleDate").value = todayISO();
+
+    document.getElementById("documentNumber").value =
+        getNextDocumentNumber(
+            document.getElementById("documentType").value
+        );
+
+    products = [];
+
+    addProductRow();
+
+    renderSales();
+
+}
+
+
+document
+    .getElementById("documentType")
+    .addEventListener("change", function() {
+
+        document.getElementById("documentNumber").value =
+            getNextDocumentNumber(this.value);
+
+    });
+
+
+/* ============================================================
    PRODUCTOS
-========================================================= */
-function addProduct(data = null){
-  const tbody =
-    document.getElementById(
-      "productsBody"
-    );
-  const tr =
-    document.createElement("tr");
-  tr.innerHTML = `
-    <td>
-      <input
-        type="text"
-        class="product-name"
-        placeholder="Producto o servicio"
-        value="${escapeHtml(
-          data?.name || ""
-        )}"
-      >
-    </td>
-    <td>
-      <input
-        type="number"
-        class="product-qty qty"
-        min="0"
-        step="1"
-        value="${data?.quantity ?? 1}"
-      >
-    </td>
-    <td>
-      <input
-        type="number"
-        class="product-gross price"
-        min="0"
-        step="0.01"
-        placeholder="0,00"
-        value="${data?.grossPrice ?? ""}"
-      >
-    </td>
-    <td>
-      <input
-        type="text"
-        class="product-net readonly-price"
-        readonly
-        value="0,00 €"
-      >
-    </td>
-    <td>
-      <span
-        class="product-vat money-cell"
-      >
-        0,00 €
-      </span>
-    </td>
-    <td>
-      <span
-        class="product-total money-cell"
-      >
-        0,00 €
-      </span>
-    </td>
-    <td>
-      <button
-        type="button"
-        class="btn-delete"
-        onclick="removeProduct(this)"
-      >
-        ✕
-      </button>
-    </td>
-  `;
-  tbody.appendChild(tr);
-  calculateTotals();
-}
-/* =========================================================
-   ELIMINAR PRODUCTO
-========================================================= */
-function removeProduct(button){
-  const row =
-    button.closest("tr");
-  if(row){
-    row.remove();
-  }
-  calculateTotals();
-  saveForm();
-}
-/* =========================================================
-   CÁLCULO
-========================================================= */
-function calculateTotals(){
-  const rows =
-    document.querySelectorAll(
-      "#productsBody tr"
-    );
-  let grossSubtotal = 0;
-  rows.forEach(row => {
-    const quantity =
-      Number(
-        row.querySelector(
-          ".product-qty"
-        )?.value || 0
-      );
-    const grossPrice =
-      Number(
-        row.querySelector(
-          ".product-gross"
-        )?.value || 0
-      );
-    const netPrice =
-      grossToNet(
-        grossPrice
-      );
-    const lineGross =
-      quantity *
-      grossPrice;
-    const lineNet =
-      quantity *
-      netPrice;
-    const lineVat =
-      lineGross -
-      lineNet;
-    grossSubtotal +=
-      lineGross;
-    const netInput =
-      row.querySelector(
-        ".product-net"
-      );
-    if(netInput){
-      netInput.value =
-        money(netPrice);
-    }
-    const vatElement =
-      row.querySelector(
-        ".product-vat"
-      );
-    if(vatElement){
-      vatElement.textContent =
-        money(lineVat);
-    }
-    const totalElement =
-      row.querySelector(
-        ".product-total"
-      );
-    if(totalElement){
-      totalElement.textContent =
-        money(lineGross);
-    }
-  });
-  let grossDiscount =
-    Number(
-      document.getElementById(
-        "discount"
-      ).value || 0
-    );
-  if(grossDiscount < 0){
-    grossDiscount = 0;
-  }
-  if(grossDiscount > grossSubtotal){
-    grossDiscount =
-      grossSubtotal;
-  }
-  const netSubtotal =
-    grossToNet(
-      grossSubtotal
-    );
-  const netDiscount =
-    grossToNet(
-      grossDiscount
-    );
-  const taxableBase =
-    Math.max(
-      0,
-      netSubtotal -
-      netDiscount
-    );
-  const grossTotal =
-    Math.max(
-      0,
-      grossSubtotal -
-      grossDiscount
-    );
-  const vatTotal =
-    grossTotal -
-    taxableBase;
-  document.getElementById(
-    "subtotalNet"
-  ).textContent =
-    money(netSubtotal);
-  document.getElementById(
-    "discountDisplay"
-  ).textContent =
-    money(grossDiscount);
-  document.getElementById(
-    "taxableBase"
-  ).textContent =
-    money(taxableBase);
-  document.getElementById(
-    "vatTotal"
-  ).textContent =
-    money(vatTotal);
-  document.getElementById(
-    "grandTotal"
-  ).textContent =
-    money(grossTotal);
-}
-/* =========================================================
-   PRODUCTOS PARA EL DOCUMENTO
-========================================================= */
-function getProducts(){
-  const rows =
-    document.querySelectorAll(
-      "#productsBody tr"
-    );
-  const products = [];
-  rows.forEach(row => {
-    const name =
-      row.querySelector(
-        ".product-name"
-      )?.value.trim() || "";
-    const quantity =
-      Number(
-        row.querySelector(
-          ".product-qty"
-        )?.value || 0
-      );
-    const grossPrice =
-      Number(
-        row.querySelector(
-          ".product-gross"
-        )?.value || 0
-      );
-    if(
-      !name &&
-      !grossPrice
-    ){
-      return;
-    }
-    const netPrice =
-      grossToNet(
-        grossPrice
-      );
-    const grossTotal =
-      quantity *
-      grossPrice;
-    const netTotal =
-      quantity *
-      netPrice;
-    const vat =
-      grossTotal -
-      netTotal;
+============================================================ */
+
+function addProductRow(data = {}) {
+
+    const id = Date.now() + Math.random();
+
     products.push({
-      name,
-      quantity,
-      grossPrice,
-      netPrice,
-      vatRate:21,
-      vat,
-      grossTotal,
-      netTotal
+
+        id,
+
+        description: data.description || "",
+
+        quantity: Number(data.quantity || 1),
+
+        gross: Number(data.gross || 0)
+
     });
-  });
-  return products;
+
+    renderProducts();
+
 }
-/* =========================================================
-   DATOS DEL DOCUMENTO
-========================================================= */
-function getDocumentData(){
-  const type =
-    document.getElementById(
-      "documentType"
-    ).value;
-  const products =
-    getProducts();
-  const grossSubtotal =
-    products.reduce(
-      (sum,p) =>
-        sum + p.grossTotal,
-      0
-    );
-  let grossDiscount =
-    Number(
-      document.getElementById(
-        "discount"
-      ).value || 0
-    );
-  if(grossDiscount < 0){
-    grossDiscount = 0;
-  }
-  if(grossDiscount > grossSubtotal){
-    grossDiscount =
-      grossSubtotal;
-  }
-  const netSubtotal =
-    grossToNet(
-      grossSubtotal
-    );
-  const netDiscount =
-    grossToNet(
-      grossDiscount
-    );
-  const taxableBase =
-    Math.max(
-      0,
-      netSubtotal -
-      netDiscount
-    );
-  const grossTotal =
-    Math.max(
-      0,
-      grossSubtotal -
-      grossDiscount
-    );
-  const vatTotal =
-    grossTotal -
-    taxableBase;
-  return {
-    type,
-    title:
-      type === "factura"
-        ? "FACTURA"
-        : "PRESUPUESTO",
-    /*
-      AQUÍ SE UTILIZA EL NÚMERO
-      QUE TÚ HAYAS ESCRITO.
-    */
-    number:
-      document.getElementById(
-        "documentNumber"
-      ).value.trim(),
-    date:
-      document.getElementById(
-        "documentDate"
-      ).value,
-    company:{
-      name:
-        document.getElementById(
-          "companyName"
-        ).value.trim(),
-      nif:
-        document.getElementById(
-          "companyNif"
-        ).value.trim(),
-      address:
-        document.getElementById(
-          "companyAddress"
-        ).value.trim()
-    },
-    client:{
-      name:
-        document.getElementById(
-          "clientName"
-        ).value.trim(),
-      nif:
-        document.getElementById(
-          "clientNif"
-        ).value.trim(),
-      address:
-        document.getElementById(
-          "clientAddress"
-        ).value.trim(),
-      phone:
-        document.getElementById(
-          "clientPhone"
-        ).value.trim(),
-      email:
-        document.getElementById(
-          "clientEmail"
-        ).value.trim()
-    },
-    products,
-    grossSubtotal,
-    netSubtotal,
-    grossDiscount,
-    netDiscount,
-    taxableBase,
-    vatTotal,
-    grossTotal,
-    notes:
-      document.getElementById(
-        "notes"
-      ).value.trim()
-  };
+
+
+function removeProduct(id) {
+
+    products = products.filter(p => p.id !== id);
+
+    if (products.length === 0) {
+
+        addProductRow();
+
+        return;
+
+    }
+
+    renderProducts();
+
 }
-/* =========================================================
-   NUMERACIÓN
-========================================================= */
-function updateDocumentNumber(){
-  const input =
-    document.getElementById(
-      "documentNumber"
+
+
+function updateProduct(id, field, value) {
+
+    const product = products.find(p => p.id === id);
+
+    if (!product) return;
+
+    if (field === "description") {
+
+        product.description = value;
+
+    }
+
+    if (field === "quantity") {
+
+        product.quantity = Number(value) || 0;
+
+    }
+
+    if (field === "gross") {
+
+        product.gross = Number(value) || 0;
+
+    }
+
+    renderProducts();
+
+}
+
+
+function renderProducts() {
+
+    const tbody = document.getElementById("productsBody");
+
+    tbody.innerHTML = "";
+
+    products.forEach(product => {
+
+        const tr = document.createElement("tr");
+
+        const net = grossToNet(product.gross);
+
+        const vat = grossToVat(product.gross);
+
+        const total = round2(product.quantity * product.gross);
+
+        const lineNet = round2(product.quantity * net);
+
+        const lineVat = round2(product.quantity * vat);
+
+        tr.innerHTML = `
+
+            <td>
+                <input
+                    type="text"
+                    value="${escapeHtml(product.description)}"
+                    onchange="updateProduct(${product.id}, 'description', this.value)"
+                    placeholder="Producto"
+                >
+            </td>
+
+            <td>
+                <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${product.quantity}"
+                    onchange="updateProduct(${product.id}, 'quantity', this.value)"
+                >
+            </td>
+
+            <td>
+                <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="${product.gross.toFixed(2)}"
+                    onchange="updateProduct(${product.id}, 'gross', this.value)"
+                >
+            </td>
+
+            <td>${money(lineNet)}</td>
+
+            <td>${money(lineVat)}</td>
+
+            <td>${money(total)}</td>
+
+            <td>
+                <button
+                    class="btn-danger"
+                    onclick="removeProduct(${product.id})"
+                >
+                    ✕
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+    calculateInvoice();
+
+}
+
+
+function calculateInvoice() {
+
+    let subtotalGross = 0;
+
+    let subtotalNet = 0;
+
+    let subtotalVat = 0;
+
+    products.forEach(product => {
+
+        const gross = round2(
+            product.quantity * product.gross
+        );
+
+        const net = grossToNet(gross);
+
+        const vat = grossToVat(gross);
+
+        subtotalGross += gross;
+
+        subtotalNet += net;
+
+        subtotalVat += vat;
+
+    });
+
+    const discountGross = Number(
+        document.getElementById("discountGross").value
+    ) || 0;
+
+    const discountNet = grossToNet(discountGross);
+
+    const discountVat = grossToVat(discountGross);
+
+    const taxableBase = round2(
+        subtotalNet - discountNet
     );
-  /*
-    MUY IMPORTANTE:
-    Si ya hay un número escrito,
-    NO lo sustituimos.
-  */
-  if(
-    input.value.trim() !== ""
-  ){
-    return;
-  }
-  const type =
-    document.getElementById(
-      "documentType"
-    ).value;
-  const year =
-    new Date()
-      .getFullYear();
-  const storageKey =
-    type === "factura"
-      ? `invoiceNumber_${year}`
-      : `budgetNumber_${year}`;
-  let number =
-    Number(
-      localStorage.getItem(
-        storageKey
-      ) || 0
+
+    const vatTotal = round2(
+        subtotalVat - discountVat
     );
-  if(number === 0){
-    number = 1;
+
+    const grandTotal = round2(
+        subtotalGross - discountGross
+    );
+
+    document.getElementById("subtotalNet").textContent =
+        money(subtotalNet);
+
+    document.getElementById("discountNet").textContent =
+        money(discountNet);
+
+    document.getElementById("taxableBase").textContent =
+        money(taxableBase);
+
+    document.getElementById("vatTotal").textContent =
+        money(vatTotal);
+
+    document.getElementById("grandTotal").textContent =
+        money(grandTotal);
+
+}
+
+
+/* ============================================================
+   VENTAS
+============================================================ */
+
+function getSales() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(SALES_STORAGE_KEY)
+        ) || [];
+
+    } catch {
+
+        return [];
+
+    }
+
+}
+
+
+function saveSales(sales) {
+
     localStorage.setItem(
-      storageKey,
-      number
+        SALES_STORAGE_KEY,
+        JSON.stringify(sales)
     );
-  }
-  const prefix =
-    type === "factura"
-      ? ""
-      : "PRES-";
-  input.value =
-    prefix +
-    year +
-    "-" +
-    String(number)
-      .padStart(4,"0");
+
 }
-/* =========================================================
-   INCREMENTAR NÚMERO
-========================================================= */
-function incrementDocumentNumber(){
-  const type =
-    document.getElementById(
-      "documentType"
-    ).value;
-  const year =
-    new Date()
-      .getFullYear();
-  const storageKey =
-    type === "factura"
-      ? `invoiceNumber_${year}`
-      : `budgetNumber_${year}`;
-  let number =
-    Number(
-      localStorage.getItem(
-        storageKey
-      ) || 1
-    );
-  number++;
-  localStorage.setItem(
-    storageKey,
-    number
-  );
-}
-/* =========================================================
-   NOTA PRESUPUESTO
-========================================================= */
-function updateLegalNote(){
-  const type =
-    document.getElementById(
-      "documentType"
-    ).value;
-  const note =
-    document.getElementById(
-      "legalNote"
-    );
-  if(type === "presupuesto"){
-    note.style.display =
-      "block";
-  }else{
-    note.style.display =
-      "none";
-  }
-}
-/* =========================================================
-   VALIDAR
-========================================================= */
-function validateDocument(){
-  const clientName =
-    document.getElementById(
-      "clientName"
-    ).value.trim();
-  const documentNumber =
-    document.getElementById(
-      "documentNumber"
-    ).value.trim();
-  if(!documentNumber){
-    showStatus(
-      "Debes introducir el número de factura o presupuesto.",
-      "error"
-    );
-    return false;
-  }
-  if(!clientName){
-    showStatus(
-      "Debes introducir el nombre o razón social del cliente.",
-      "error"
-    );
-    return false;
-  }
-  return true;
-}
-/* =========================================================
-   CREAR PDF
-========================================================= */
-function createPDF(){
-  if(
-    !window.jspdf ||
-    typeof window.jspdf.jsPDF !== "function"
-  ){
-    throw new Error(
-      "La librería jsPDF no está cargada."
-    );
-  }
-  const data =
-    getDocumentData();
-  const { jsPDF } =
-    window.jspdf;
-  const doc =
-    new jsPDF({
-      orientation:"portrait",
-      unit:"mm",
-      format:"a4"
+
+
+function addSale() {
+
+    const month =
+        document.getElementById("salesMonth").value;
+
+    const platform =
+        document.getElementById("salePlatform").value;
+
+    const date =
+        document.getElementById("saleDate").value;
+
+    const product =
+        document.getElementById("saleProduct").value.trim();
+
+    const gross =
+        Number(document.getElementById("saleGross").value);
+
+    if (!month) {
+
+        alert("Selecciona el mes.");
+
+        return;
+
+    }
+
+    if (!date) {
+
+        alert("Selecciona la fecha de la venta.");
+
+        return;
+
+    }
+
+    if (!product) {
+
+        alert("Introduce el producto vendido.");
+
+        return;
+
+    }
+
+    if (!gross || gross <= 0) {
+
+        alert("Introduce un precio válido.");
+
+        return;
+
+    }
+
+    const sales = getSales();
+
+    sales.push({
+
+        id: Date.now(),
+
+        month,
+
+        platform,
+
+        date,
+
+        product,
+
+        gross: round2(gross),
+
+        net: grossToNet(gross),
+
+        vat: grossToVat(gross)
+
     });
-  const pageWidth =
-    doc.internal.pageSize
-      .getWidth();
-  const pageHeight =
-    doc.internal.pageSize
-      .getHeight();
-  let y = 18;
-  /* =====================================================
-     CABECERA
-  ====================================================== */
-  doc.setFillColor(
-    23,
-    59,
-    0
-  );
-  doc.rect(
-    0,
-    0,
-    pageWidth,
-    34,
-    "F"
-  );
-  doc.setTextColor(
-    255,
-    255,
-    255
-  );
-  doc.setFontSize(20);
-  doc.setFont(
-    undefined,
-    "bold"
-  );
-  doc.text(
-    "El Bolsillo Mágico 3D",
-    15,
-    15
-  );
-  doc.setFontSize(10);
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  doc.text(
-    data.title,
-    15,
-    24
-  );
-  doc.text(
-    `Nº ${data.number}`,
-    pageWidth - 15,
-    15,
-    {
-      align:"right"
-    }
-  );
-  doc.text(
-    formatDate(data.date),
-    pageWidth - 15,
-    24,
-    {
-      align:"right"
-    }
-  );
-  y = 46;
-  /* =====================================================
-     DATOS EMPRESA
-  ====================================================== */
-  doc.setTextColor(
-    23,
-    27,
-    21
-  );
-  doc.setFontSize(11);
-  doc.setFont(
-    undefined,
-    "bold"
-  );
-  doc.text(
-    "DATOS DE FACTURACIÓN",
-    15,
-    y
-  );
-  y += 7;
-  doc.setFontSize(9);
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  doc.text(
-    data.company.name,
-    15,
-    y
-  );
-  y += 5;
-  doc.text(
-    `NIF: ${data.company.nif}`,
-    15,
-    y
-  );
-  y += 5;
-  const companyAddressLines =
-    doc.splitTextToSize(
-      data.company.address,
-      82
-    );
-  doc.text(
-    companyAddressLines,
-    15,
-    y
-  );
-  y +=
-    companyAddressLines.length *
-    5;
-  /* =====================================================
-     DATOS CLIENTE
-  ====================================================== */
-  let clientY = 53;
-  doc.setFontSize(11);
-  doc.setFont(
-    undefined,
-    "bold"
-  );
-  doc.text(
-    "CLIENTE",
-    112,
-    clientY
-  );
-  clientY += 7;
-  doc.setFontSize(9);
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  if(data.client.name){
-    doc.text(
-      data.client.name,
-      112,
-      clientY
-    );
-    clientY += 5;
-  }
-  if(data.client.nif){
-    doc.text(
-      `NIF/DNI: ${data.client.nif}`,
-      112,
-      clientY
-    );
-    clientY += 5;
-  }
-  if(data.client.address){
-    const addressLines =
-      doc.splitTextToSize(
-        data.client.address,
-        82
-      );
-    doc.text(
-      addressLines,
-      112,
-      clientY
-    );
-    clientY +=
-      addressLines.length *
-      5;
-  }
-  if(data.client.phone){
-    doc.text(
-      `Tel.: ${data.client.phone}`,
-      112,
-      clientY
-    );
-    clientY += 5;
-  }
-  if(data.client.email){
-    doc.text(
-      `Email: ${data.client.email}`,
-      112,
-      clientY
-    );
-    clientY += 5;
-  }
-  y =
-    Math.max(
-      y,
-      clientY
-    ) + 8;
-  /* =====================================================
-     TABLA
-  ====================================================== */
-  doc.setFillColor(
-    23,
-    59,
-    0
-  );
-  doc.setTextColor(
-    255,
-    255,
-    255
-  );
-  doc.rect(
-    15,
-    y,
-    180,
-    9,
-    "F"
-  );
-  doc.setFontSize(7.5);
-  doc.setFont(
-    undefined,
-    "bold"
-  );
-  doc.text(
-    "PRODUCTO / SERVICIO",
-    17,
-    y + 6
-  );
-  doc.text(
-    "CANT.",
-    94,
-    y + 6
-  );
-  doc.text(
-    "P. UNIT.",
-    108,
-    y + 6
-  );
-  doc.text(
-    "SIN IVA",
-    134,
-    y + 6
-  );
-  doc.text(
-    "IVA",
-    157,
-    y + 6
-  );
-  doc.text(
-    "TOTAL",
-    174,
-    y + 6
-  );
-  y += 9;
-  doc.setTextColor(
-    23,
-    27,
-    21
-  );
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  data.products.forEach(
-    product => {
-      if(
-        y >
-        pageHeight - 50
-      ){
-        doc.addPage();
-        y = 20;
-      }
-      const nameLines =
-        doc.splitTextToSize(
-          product.name || "",
-          70
-        );
-      const rowHeight =
-        Math.max(
-          8,
-          nameLines.length *
-          4 + 4
-        );
-      doc.text(
-        nameLines,
-        17,
-        y + 5
-      );
-      doc.text(
-        String(
-          product.quantity
-        ),
-        94,
-        y + 5
-      );
-      doc.text(
-        money(
-          product.grossPrice
-        ),
-        108,
-        y + 5
-      );
-      doc.text(
-        money(
-          product.netPrice
-        ),
-        134,
-        y + 5
-      );
-      doc.text(
-        money(
-          product.vat
-        ),
-        157,
-        y + 5
-      );
-      doc.text(
-        money(
-          product.grossTotal
-        ),
-        174,
-        y + 5
-      );
-      doc.setDrawColor(
-        225,
-        229,
-        222
-      );
-      doc.line(
-        15,
-        y + rowHeight,
-        195,
-        y + rowHeight
-      );
-      y += rowHeight;
-    }
-  );
-  y += 8;
-  /* =====================================================
-     TOTALES
-  ====================================================== */
-  const totalsX = 130;
-  doc.setFontSize(9);
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  doc.text(
-    "Subtotal sin IVA:",
-    totalsX,
-    y
-  );
-  doc.text(
-    money(
-      data.netSubtotal
-    ),
-    195,
-    y,
-    {
-      align:"right"
-    }
-  );
-  y += 6;
-  doc.text(
-    "Descuento:",
-    totalsX,
-    y
-  );
-  doc.text(
-    money(
-      data.grossDiscount
-    ),
-    195,
-    y,
-    {
-      align:"right"
-    }
-  );
-  y += 6;
-  doc.text(
-    "Base imponible:",
-    totalsX,
-    y
-  );
-  doc.text(
-    money(
-      data.taxableBase
-    ),
-    195,
-    y,
-    {
-      align:"right"
-    }
-  );
-  y += 6;
-  doc.text(
-    "IVA 21%:",
-    totalsX,
-    y
-  );
-  doc.text(
-    money(
-      data.vatTotal
-    ),
-    195,
-    y,
-    {
-      align:"right"
-    }
-  );
-  y += 9;
-  doc.setFont(
-    undefined,
-    "bold"
-  );
-  doc.setFontSize(12);
-  doc.text(
-    "TOTAL:",
-    totalsX,
-    y
-  );
-  doc.text(
-    money(
-      data.grossTotal
-    ),
-    195,
-    y,
-    {
-      align:"right"
-    }
-  );
-  y += 12;
-  /* =====================================================
-     OBSERVACIONES
-  ====================================================== */
-  if(data.notes){
-    doc.setFontSize(10);
-    doc.setFont(
-      undefined,
-      "bold"
-    );
-    doc.text(
-      "OBSERVACIONES",
-      15,
-      y
-    );
-    y += 6;
-    doc.setFontSize(8.5);
-    doc.setFont(
-      undefined,
-      "normal"
-    );
-    const noteLines =
-      doc.splitTextToSize(
-        data.notes,
-        180
-      );
-    doc.text(
-      noteLines,
-      15,
-      y
-    );
-    y +=
-      noteLines.length *
-      4 + 7;
-  }
-  /* =====================================================
-     NOTA LEGAL
-  ====================================================== */
-  if(
-    data.type ===
-    "presupuesto"
-  ){
-    const legal =
-      "Este presupuesto no es una factura. La factura correspondiente a la operación se emitirá una vez se realice el pago.";
-    const legalLines =
-      doc.splitTextToSize(
-        legal,
-        170
-      );
-    const legalHeight =
-      legalLines.length *
-      4 + 10;
-    if(
-      y + legalHeight >
-      pageHeight - 15
-    ){
-      doc.addPage();
-      y = 20;
-    }
-    doc.setFillColor(
-      245,
-      247,
-      242
-    );
-    doc.roundedRect(
-      15,
-      y,
-      180,
-      legalHeight,
-      2,
-      2,
-      "F"
-    );
-    doc.setTextColor(
-      23,
-      59,
-      0
-    );
-    doc.setFontSize(8);
-    doc.setFont(
-      undefined,
-      "bold"
-    );
-    doc.text(
-      legalLines,
-      19,
-      y + 6
-    );
-    y +=
-      legalHeight + 8;
-  }
-  /* =====================================================
-     PIE
-  ====================================================== */
-  doc.setTextColor(
-    112,
-    119,
-    108
-  );
-  doc.setFontSize(7.5);
-  doc.setFont(
-    undefined,
-    "normal"
-  );
-  doc.text(
-    "El Bolsillo Mágico 3D",
-    15,
-    pageHeight - 10
-  );
-  doc.text(
-    data.title,
-    pageWidth - 15,
-    pageHeight - 10,
-    {
-      align:"right"
-    }
-  );
-  return doc;
+
+    saveSales(sales);
+
+    document.getElementById("saleProduct").value = "";
+
+    document.getElementById("saleGross").value = "";
+
+    renderSales();
+
 }
-/* =========================================================
-   DESCARGAR PDF
-========================================================= */
-function downloadPDF(){
-  if(!validateDocument()){
-    return;
-  }
-  if(
-    !window.jspdf ||
-    typeof window.jspdf.jsPDF !== "function"
-  ){
-    showStatus(
-      "No se ha podido cargar el generador de PDF. Comprueba tu conexión a Internet y vuelve a cargar la página.",
-      "error"
-    );
-    console.error(
-      "jsPDF no está disponible:",
-      window.jspdf
-    );
-    return;
-  }
-  try{
-    const data =
-      getDocumentData();
-    const doc =
-      createPDF();
-    let filename;
-    if(data.type === "factura"){
-      filename =
-        `Factura-${data.number}.pdf`;
-    }else{
-      filename =
-        `Presupuesto-${data.number}.pdf`;
+
+
+document
+    .getElementById("salesMonth")
+    .addEventListener("change", renderSales);
+
+
+function deleteSale(id) {
+
+    if (!confirm("¿Quieres eliminar esta venta?")) {
+
+        return;
+
     }
-    doc.save(
-      filename
-    );
-    saveForm();
-    /*
-      Después de generar el PDF,
-      dejamos guardado el número manual.
-    */
-    showStatus(
-      `PDF generado correctamente: ${filename}`,
-      "success"
-    );
-  }catch(error){
-    console.error(
-      "Error al generar el PDF:",
-      error
-    );
-    showStatus(
-      "Ha ocurrido un error al generar el PDF. Revisa la consola del navegador.",
-      "error"
-    );
-  }
+
+    let sales = getSales();
+
+    sales = sales.filter(sale => sale.id !== id);
+
+    saveSales(sales);
+
+    renderSales();
+
 }
-/* =========================================================
-   EMAIL
-========================================================= */
-async function sendEmail(recipient){
-  showStatus(
-    "El envío por correo lo configuraremos más adelante.",
-    "error"
-  );
+
+
+function deleteMonthSales() {
+
+    const month =
+        document.getElementById("salesMonth").value;
+
+    const sales =
+        getSales().filter(sale => sale.month === month);
+
+    if (sales.length === 0) {
+
+        alert("No hay ventas para este mes.");
+
+        return;
+
+    }
+
+    const monthName =
+        formatMonth(month);
+
+    if (!confirm(
+        `¿Eliminar todas las ventas de ${monthName}?`
+    )) {
+
+        return;
+
+    }
+
+    const remaining =
+        getSales().filter(sale => sale.month !== month);
+
+    saveSales(remaining);
+
+    renderSales();
+
 }
-/* =========================================================
-   ENVIAR AL CLIENTE
-========================================================= */
-function sendToClient(){
-  const email =
-    document.getElementById(
-      "clientEmail"
-    ).value.trim();
-  if(!email){
-    showStatus(
-      "El cliente no tiene email. Puedes generar el PDF y enviárselo manualmente.",
-      "error"
+
+
+function renderSales() {
+
+    const month =
+        document.getElementById("salesMonth").value;
+
+    const tbody =
+        document.getElementById("salesBody");
+
+    tbody.innerHTML = "";
+
+    const sales =
+        getSales().filter(sale => sale.month === month);
+
+    document.getElementById("emptySales").style.display =
+        sales.length ? "none" : "block";
+
+    let wallapop = 0;
+
+    let vinted = 0;
+
+    let other = 0;
+
+    let totalNet = 0;
+
+    let totalVat = 0;
+
+    let totalGross = 0;
+
+    sales.sort((a,b) =>
+        a.date.localeCompare(b.date)
     );
-    return;
-  }
-  sendEmail(email);
-}
-/* =========================================================
-   ENVIAR A MI CORREO
-========================================================= */
-function sendToMe(){
-  showStatus(
-    "El envío por correo lo configuraremos más adelante.",
-    "error"
-  );
-}
-/* =========================================================
-   NUEVO DOCUMENTO
-========================================================= */
-function newDocument(){
-  const currentType =
-    document.getElementById(
-      "documentType"
-    ).value;
-  /*
-    Incrementamos el contador interno.
-  */
-  incrementDocumentNumber();
-  /*
-    Limpiamos los datos del cliente,
-    productos, etc.
-  */
-  clearForm(false);
-  document.getElementById(
-    "documentType"
-  ).value =
-    currentType;
-  document.getElementById(
-    "documentDate"
-  ).value =
-    today();
-  /*
-    IMPORTANTE:
-    Vaciamos primero el número para que
-    se genere el siguiente automáticamente.
-  */
-  document.getElementById(
-    "documentNumber"
-  ).value = "";
-  updateDocumentNumber();
-  updateLegalNote();
-  calculateTotals();
-  saveForm();
-  showStatus(
-    "Nuevo documento preparado.",
-    "success"
-  );
-}
-/* =========================================================
-   LIMPIAR
-========================================================= */
-function clearForm(
-  showMessage = true
-){
-  document.getElementById(
-    "clientName"
-  ).value = "";
-  document.getElementById(
-    "clientNif"
-  ).value = "";
-  document.getElementById(
-    "clientAddress"
-  ).value = "";
-  document.getElementById(
-    "clientPhone"
-  ).value = "";
-  document.getElementById(
-    "clientEmail"
-  ).value = "";
-  document.getElementById(
-    "discount"
-  ).value = "0";
-  document.getElementById(
-    "notes"
-  ).value = "";
-  document.getElementById(
-    "productsBody"
-  ).innerHTML = "";
-  addProduct();
-  calculateTotals();
-  if(showMessage){
-    showStatus(
-      "Formulario limpiado.",
-      "success"
-    );
-  }
-}
-/* =========================================================
-   GUARDAR
-========================================================= */
-function saveForm(){
-  const data = {
-    documentType:
-      document.getElementById(
-        "documentType"
-      ).value,
-    /*
-      GUARDAMOS TAMBIÉN EL NÚMERO
-      QUE HAYAS ESCRITO MANUALMENTE.
-    */
-    documentNumber:
-      document.getElementById(
-        "documentNumber"
-      ).value,
-    documentDate:
-      document.getElementById(
-        "documentDate"
-      ).value,
-    companyName:
-      document.getElementById(
-        "companyName"
-      ).value,
-    companyNif:
-      document.getElementById(
-        "companyNif"
-      ).value,
-    companyAddress:
-      document.getElementById(
-        "companyAddress"
-      ).value,
-    clientName:
-      document.getElementById(
-        "clientName"
-      ).value,
-    clientNif:
-      document.getElementById(
-        "clientNif"
-      ).value,
-    clientAddress:
-      document.getElementById(
-        "clientAddress"
-      ).value,
-    clientPhone:
-      document.getElementById(
-        "clientPhone"
-      ).value,
-    clientEmail:
-      document.getElementById(
-        "clientEmail"
-      ).value,
-    discount:
-      document.getElementById(
-        "discount"
-      ).value,
-    notes:
-      document.getElementById(
-        "notes"
-      ).value,
-    products:
-      getProducts()
-  };
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
-}
-/* =========================================================
-   CARGAR
-========================================================= */
-function loadForm(){
-  const saved =
-    localStorage.getItem(
-      STORAGE_KEY
-    );
-  if(!saved){
-    return;
-  }
-  try{
-    const data =
-      JSON.parse(saved);
-    if(data.documentType){
-      document.getElementById(
-        "documentType"
-      ).value =
-        data.documentType;
-    }
-    /*
-      CARGAMOS EL NÚMERO GUARDADO.
-    */
-    if(
-      data.documentNumber !== undefined &&
-      data.documentNumber !== null &&
-      data.documentNumber !== ""
-    ){
-      document.getElementById(
-        "documentNumber"
-      ).value =
-        data.documentNumber;
-    }
-    if(data.documentDate){
-      document.getElementById(
-        "documentDate"
-      ).value =
-        data.documentDate;
-    }
-    if(data.companyName !== undefined){
-      document.getElementById(
-        "companyName"
-      ).value =
-        data.companyName;
-    }
-    if(data.companyNif !== undefined){
-      document.getElementById(
-        "companyNif"
-      ).value =
-        data.companyNif;
-    }
-    if(data.companyAddress !== undefined){
-      document.getElementById(
-        "companyAddress"
-      ).value =
-        data.companyAddress;
-    }
-    if(data.clientName !== undefined){
-      document.getElementById(
-        "clientName"
-      ).value =
-        data.clientName;
-    }
-    if(data.clientNif !== undefined){
-      document.getElementById(
-        "clientNif"
-      ).value =
-        data.clientNif;
-    }
-    if(data.clientAddress !== undefined){
-      document.getElementById(
-        "clientAddress"
-      ).value =
-        data.clientAddress;
-    }
-    if(data.clientPhone !== undefined){
-      document.getElementById(
-        "clientPhone"
-      ).value =
-        data.clientPhone;
-    }
-    if(data.clientEmail !== undefined){
-      document.getElementById(
-        "clientEmail"
-      ).value =
-        data.clientEmail;
-    }
-    if(data.discount !== undefined){
-      document.getElementById(
-        "discount"
-      ).value =
-        data.discount;
-    }
-    if(data.notes !== undefined){
-      document.getElementById(
-        "notes"
-      ).value =
-        data.notes;
-    }
-    if(
-      Array.isArray(
-        data.products
-      )
-    ){
-      const tbody =
-        document.getElementById(
-          "productsBody"
-        );
-      tbody.innerHTML = "";
-      data.products.forEach(
-        product => {
-          addProduct({
-            name:
-              product.name,
-            quantity:
-              product.quantity,
-            grossPrice:
-              product.grossPrice
-          });
+
+    sales.forEach(sale => {
+
+        totalNet += sale.net;
+
+        totalVat += sale.vat;
+
+        totalGross += sale.gross;
+
+        if (sale.platform === "Wallapop Pro") {
+
+            wallapop += sale.gross;
+
+        } else if (sale.platform === "Vinted Pro") {
+
+            vinted += sale.gross;
+
+        } else {
+
+            other += sale.gross;
+
         }
-      );
+
+        let badgeClass = "badge-other";
+
+        if (sale.platform === "Wallapop Pro") {
+
+            badgeClass = "badge-wallapop";
+
+        }
+
+        if (sale.platform === "Vinted Pro") {
+
+            badgeClass = "badge-vinted";
+
+        }
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+
+            <td>
+                ${formatDate(sale.date)}
+            </td>
+
+            <td>
+                <span class="badge ${badgeClass}">
+                    ${escapeHtml(sale.platform)}
+                </span>
+            </td>
+
+            <td>
+                ${escapeHtml(sale.product)}
+            </td>
+
+            <td>
+                ${money(sale.net)}
+            </td>
+
+            <td>
+                ${money(sale.vat)}
+            </td>
+
+            <td>
+                ${money(sale.gross)}
+            </td>
+
+            <td>
+                <button
+                    class="btn-danger"
+                    onclick="deleteSale(${sale.id})"
+                >
+                    ✕
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+    document.getElementById("wallapopTotal").textContent =
+        money(wallapop);
+
+    document.getElementById("vintedTotal").textContent =
+        money(vinted);
+
+    document.getElementById("otherTotal").textContent =
+        money(other);
+
+    document.getElementById("salesNet").textContent =
+        money(totalNet);
+
+    document.getElementById("salesVat").textContent =
+        money(totalVat);
+
+    document.getElementById("salesGross").textContent =
+        money(totalGross);
+
+}
+
+
+/* ============================================================
+   FACTURA MENSUAL
+============================================================ */
+
+function generateMonthlyInvoice() {
+
+    const month =
+        document.getElementById("salesMonth").value;
+
+    const sales =
+        getSales().filter(sale => sale.month === month);
+
+    if (sales.length === 0) {
+
+        alert("No hay ventas registradas para este mes.");
+
+        return;
+
     }
-  }catch(error){
-    console.warn(
-      "No se pudieron cargar los datos guardados.",
-      error
+
+    const monthName =
+        formatMonth(month);
+
+    const totalNet =
+        round2(
+            sales.reduce(
+                (sum, sale) => sum + sale.net,
+                0
+            )
+        );
+
+    const totalVat =
+        round2(
+            sales.reduce(
+                (sum, sale) => sum + sale.vat,
+                0
+            )
+        );
+
+    const totalGross =
+        round2(
+            sales.reduce(
+                (sum, sale) => sum + sale.gross,
+                0
+            )
+        );
+
+    const wallapop =
+        round2(
+            sales
+                .filter(s => s.platform === "Wallapop Pro")
+                .reduce((sum, s) => sum + s.gross, 0)
+        );
+
+    const vinted =
+        round2(
+            sales
+                .filter(s => s.platform === "Vinted Pro")
+                .reduce((sum, s) => sum + s.gross, 0)
+        );
+
+    const other =
+        round2(
+            sales
+                .filter(s => s.platform === "Otra")
+                .reduce((sum, s) => sum + s.gross, 0)
+        );
+
+    const docNumber =
+        getNextDocumentNumber("factura");
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    let y = 20;
+
+    doc.setFontSize(20);
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        "El Bolsillo Mágico 3D",
+        20,
+        y
     );
-  }
-}
-/* =========================================================
-   STATUS
-========================================================= */
-function showStatus(
-  message,
-  type
-){
-  const status =
-    document.getElementById(
-      "status"
+
+    y += 10;
+
+    doc.setFontSize(10);
+
+    doc.setFont(undefined, "normal");
+
+    doc.text(
+        "Almudena Vázquez Camarena",
+        20,
+        y
     );
-  status.textContent =
-    message;
-  status.className =
-    "status " + type;
-  window.scrollTo({
-    top:
-      document.body.scrollHeight,
-    behavior:"smooth"
-  });
+
+    y += 5;
+
+    doc.text(
+        "NIF: 49122806G",
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        "Carretera A8126 Morón-Coripe km 3, Venta Espartero",
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        "Morón de la Frontera, Sevilla",
+        20,
+        y
+    );
+
+    y += 12;
+
+    doc.setFontSize(16);
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        "FACTURA SIMPLIFICADA",
+        20,
+        y
+    );
+
+    y += 8;
+
+    doc.setFontSize(10);
+
+    doc.setFont(undefined, "normal");
+
+    doc.text(
+        `Número: ${docNumber}`,
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        `Periodo: ${monthName}`,
+        20,
+        y
+    );
+
+    y += 12;
+
+    doc.line(20, y, 190, y);
+
+    y += 8;
+
+    doc.setFont(undefined, "bold");
+
+    doc.text("Resumen de ventas", 20, y);
+
+    y += 8;
+
+    doc.setFont(undefined, "normal");
+
+    doc.text(
+        `Wallapop Pro: ${money(wallapop)}`,
+        25,
+        y
+    );
+
+    y += 6;
+
+    doc.text(
+        `Vinted Pro: ${money(vinted)}`,
+        25,
+        y
+    );
+
+    y += 6;
+
+    doc.text(
+        `Otras plataformas: ${money(other)}`,
+        25,
+        y
+    );
+
+    y += 12;
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        `Base imponible: ${money(totalNet)}`,
+        20,
+        y
+    );
+
+    y += 7;
+
+    doc.text(
+        `IVA 21%: ${money(totalVat)}`,
+        20,
+        y
+    );
+
+    y += 8;
+
+    doc.setFontSize(14);
+
+    doc.text(
+        `TOTAL: ${money(totalGross)}`,
+        20,
+        y
+    );
+
+    y += 14;
+
+    doc.setFontSize(10);
+
+    doc.setFont(undefined, "normal");
+
+    doc.line(20, y, 190, y);
+
+    y += 8;
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        "Detalle de ventas",
+        20,
+        y
+    );
+
+    y += 7;
+
+    doc.setFont(undefined, "normal");
+
+    sales.forEach((sale, index) => {
+
+        if (y > 270) {
+
+            doc.addPage();
+
+            y = 20;
+
+        }
+
+        const text =
+            `${formatDate(sale.date)} - ${sale.platform} - ${sale.product}`;
+
+        doc.text(
+            text.substring(0, 90),
+            20,
+            y
+        );
+
+        y += 5;
+
+        doc.text(
+            `Base ${money(sale.net)} | IVA ${money(sale.vat)} | Total ${money(sale.gross)}`,
+            25,
+            y
+        );
+
+        y += 7;
+
+    });
+
+    y += 5;
+
+    doc.setFontSize(8);
+
+    doc.text(
+        "Documento generado mediante El Bolsillo Mágico 3D.",
+        20,
+        y
+    );
+
+    doc.save(
+        `factura_simplificada_${month}.pdf`
+    );
+
 }
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
-function escapeHtml(value){
-  return String(
-    value || ""
-  )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
+
+
+/* ============================================================
+   PDF FACTURA / PRESUPUESTO NORMAL
+============================================================ */
+
+function generatePDF() {
+
+    if (!validateDocument()) {
+
+        return;
+
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    const type =
+        document.getElementById("documentType").value;
+
+    const number =
+        document.getElementById("documentNumber").value;
+
+    const date =
+        document.getElementById("documentDate").value;
+
+    const companyName =
+        document.getElementById("companyName").value;
+
+    const companyNif =
+        document.getElementById("companyNif").value;
+
+    const companyAddress =
+        document.getElementById("companyAddress").value;
+
+    const clientName =
+        document.getElementById("clientName").value;
+
+    const clientNif =
+        document.getElementById("clientNif").value;
+
+    const clientAddress =
+        document.getElementById("clientAddress").value;
+
+    const clientPhone =
+        document.getElementById("clientPhone").value;
+
+    const clientEmail =
+        document.getElementById("clientEmail").value;
+
+    const notes =
+        document.getElementById("notes").value;
+
+    let y = 20;
+
+    doc.setFontSize(20);
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        "El Bolsillo Mágico 3D",
+        20,
+        y
+    );
+
+    y += 9;
+
+    doc.setFontSize(10);
+
+    doc.setFont(undefined, "normal");
+
+    doc.text(
+        companyName,
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        `NIF: ${companyNif}`,
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        companyAddress,
+        20,
+        y
+    );
+
+    y += 12;
+
+    doc.setFontSize(18);
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        type === "factura"
+            ? "FACTURA"
+            : "PRESUPUESTO",
+        20,
+        y
+    );
+
+    y += 8;
+
+    doc.setFontSize(10);
+
+    doc.setFont(undefined, "normal");
+
+    doc.text(
+        `Número: ${number}`,
+        20,
+        y
+    );
+
+    y += 5;
+
+    doc.text(
+        `Fecha: ${formatDate(date)}`,
+        20,
+        y
+    );
+
+    y += 12;
+
+    doc.setFont(undefined, "bold");
+
+    doc.text(
+        "CLIENTE",
+        20,
+        y
+    );
+
+    y += 6;
+
+    doc.setFont(undefined, "normal");
+
+    if (clientName) {
+
+        doc.text(
+            clientName,
+            20,
+            y
+        );
+
+        y += 5;
+
+    }
+
+    if (clientNif) {
+
+        doc.text(
+            `NIF/CIF: ${clientNif}`,
+            20,
+            y
+        );
+
+        y += 5;
+
+    }
+
+    if (clientAddress) {
+
+        doc.text(
+            clientAddress,
+            20,
+            y
+        );
+
+        y += 5;
+
+    }
+
+    if (clientPhone) {
+
+        doc.text(
+            `Tel.: ${clientPhone}`,
+            20,
+            y
+        );
+
+        y += 5;
+
+    }
+
+    if (clientEmail) {
+
+        doc.text(
+            `Email: ${clientEmail}`,
+            20,
+            y
+        );
+
+        y += 5;
+
+    }
+
+    y += 7;
+
+    doc.line(20, y, 190, y);
+
+    y += 8;
+
+    doc.setFont(undefined, "bold");
+
+    doc.text("Producto", 20, y);
+
+    doc.text("Cant.", 105, y);
+
+    doc.text("Base", 125, y);
+
+    doc.text("IVA", 150, y);
+
+    doc.text("Total", 175, y);
+
+    y += 6;
+
+    doc.setFont(undefined, "normal");
+
+    products.forEach(product => {
+
+        if (y > 260) {
+
+            doc.addPage();
+
+            y = 20;
+
+        }
+
+        const gross =
+            round2(product.quantity * product.gross);
+
+        const net =
+            grossToNet(gross);
+
+        const vat =
+            grossToVat(gross);
+
+        doc.text(
+            String(product.description).substring(0, 45),
+            20,
+            y
+        );
+
+        doc.text(
+            String(product.quantity),
+            105,
+            y
+        );
+
+        doc.text(
+            money(net),
+            125,
+            y
+        );
+
+        doc.text(
+            money(vat),
+            150,
+            y
+        );
+
+        doc.text(
+            money(gross),
+            175,
+            y
+        );
+
+        y += 7;
+
+    });
+
+    const discountGross =
+        Number(
+            document.getElementById("discountGross").value
+        ) || 0;
+
+    const discountNet =
+        grossToNet(discountGross);
+
+    let subtotalNet = 0;
+
+    let subtotalVat = 0;
+
+    let subtotalGross = 0;
+
+    products.forEach(product => {
+
+        const gross =
+            round2(product.quantity * product.gross);
+
+        subtotalGross += gross;
+
+        subtotalNet += grossToNet(gross);
+
+        subtotalVat += grossToVat(gross);
+
+    });
+
+    const taxableBase =
+        round2(subtotalNet - discountNet);
+
+    const vatTotal =
+        round2(subtotalVat - grossToVat(discountGross));
+
+    const grandTotal =
+        round2(subtotalGross - discountGross);
+
+    y += 8;
+
+    doc.line(120, y, 190, y);
+
+    y += 7;
+
+    doc.text(
+        `Base imponible: ${money(taxableBase)}`,
+        120,
+        y
+    );
+
+    y += 6;
+
+    doc.text(
+        `IVA 21%: ${money(vatTotal)}`,
+        120,
+        y
+    );
+
+    y += 7;
+
+    doc.setFont(undefined, "bold");
+
+    doc.setFontSize(13);
+
+    doc.text(
+        `TOTAL: ${money(grandTotal)}`,
+        120,
+        y
+    );
+
+    if (notes) {
+
+        y += 15;
+
+        doc.setFontSize(10);
+
+        doc.setFont(undefined, "bold");
+
+        doc.text(
+            "Notas:",
+            20,
+            y
+        );
+
+        y += 6;
+
+        doc.setFont(undefined, "normal");
+
+        const lines =
+            doc.splitTextToSize(notes, 170);
+
+        doc.text(
+            lines,
+            20,
+            y
+        );
+
+    }
+
+    doc.save(
+        `${type}_${number.replace(/[\/\\]/g, "-")}.pdf`
+    );
+
 }
+
+
+/* ============================================================
+   VALIDACIÓN
+============================================================ */
+
+function validateDocument() {
+
+    const type =
+        document.getElementById("documentType").value;
+
+    const number =
+        document.getElementById("documentNumber").value.trim();
+
+    const date =
+        document.getElementById("documentDate").value;
+
+    if (!number) {
+
+        alert("Introduce un número de documento.");
+
+        return false;
+
+    }
+
+    if (!date) {
+
+        alert("Introduce una fecha.");
+
+        return false;
+
+    }
+
+    if (type === "factura") {
+
+        const client =
+            document.getElementById("clientName").value.trim();
+
+        if (!client) {
+
+            alert(
+                "Para una factura introduce el nombre del cliente."
+            );
+
+            return false;
+
+        }
+
+    }
+
+    if (
+        products.length === 0 ||
+        products.every(p => !p.description)
+    ) {
+
+        alert(
+            "Añade al menos un producto o servicio."
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* ============================================================
+   GUARDAR DOCUMENTO
+============================================================ */
+
+function saveDocument() {
+
+    const data = {
+
+        documentType:
+            document.getElementById("documentType").value,
+
+        documentNumber:
+            document.getElementById("documentNumber").value,
+
+        documentDate:
+            document.getElementById("documentDate").value,
+
+        companyName:
+            document.getElementById("companyName").value,
+
+        companyNif:
+            document.getElementById("companyNif").value,
+
+        companyAddress:
+            document.getElementById("companyAddress").value,
+
+        clientName:
+            document.getElementById("clientName").value,
+
+        clientNif:
+            document.getElementById("clientNif").value,
+
+        clientAddress:
+            document.getElementById("clientAddress").value,
+
+        clientPhone:
+            document.getElementById("clientPhone").value,
+
+        clientEmail:
+            document.getElementById("clientEmail").value,
+
+        discountGross:
+            document.getElementById("discountGross").value,
+
+        notes:
+            document.getElementById("notes").value,
+
+        products
+
+    };
+
+    localStorage.setItem(
+        DOCUMENT_STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+    alert("Documento guardado correctamente.");
+
+}
+
+
+function loadDocument() {
+
+    const raw =
+        localStorage.getItem(DOCUMENT_STORAGE_KEY);
+
+    if (!raw) return;
+
+    try {
+
+        const data = JSON.parse(raw);
+
+        const fields = [
+
+            "documentType",
+            "documentNumber",
+            "documentDate",
+            "companyName",
+            "companyNif",
+            "companyAddress",
+            "clientName",
+            "clientNif",
+            "clientAddress",
+            "clientPhone",
+            "clientEmail",
+            "discountGross",
+            "notes"
+
+        ];
+
+        fields.forEach(field => {
+
+            if (
+                data[field] !== undefined &&
+                document.getElementById(field)
+            ) {
+
+                document.getElementById(field).value =
+                    data[field];
+
+            }
+
+        });
+
+        products = data.products || [];
+
+        if (products.length === 0) {
+
+            addProductRow();
+
+        } else {
+
+            renderProducts();
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* ============================================================
+   NUEVO DOCUMENTO
+============================================================ */
+
+function newDocument() {
+
+    if (
+        !confirm(
+            "¿Crear un nuevo documento? Los datos actuales no se borrarán de las ventas."
+        )
+    ) {
+
+        return;
+
+    }
+
+    document.getElementById("documentType").value =
+        "factura";
+
+    document.getElementById("documentNumber").value =
+        getNextDocumentNumber("factura");
+
+    document.getElementById("documentDate").value =
+        todayISO();
+
+    document.getElementById("clientName").value = "";
+
+    document.getElementById("clientNif").value = "";
+
+    document.getElementById("clientAddress").value = "";
+
+    document.getElementById("clientPhone").value = "";
+
+    document.getElementById("clientEmail").value = "";
+
+    document.getElementById("discountGross").value = "0";
+
+    document.getElementById("notes").value = "";
+
+    products = [];
+
+    addProductRow();
+
+}
+
+
+function clearDocument() {
+
+    if (
+        !confirm(
+            "¿Seguro que quieres limpiar el documento actual?"
+        )
+    ) {
+
+        return;
+
+    }
+
+    document.getElementById("clientName").value = "";
+
+    document.getElementById("clientNif").value = "";
+
+    document.getElementById("clientAddress").value = "";
+
+    document.getElementById("clientPhone").value = "";
+
+    document.getElementById("clientEmail").value = "";
+
+    document.getElementById("discountGross").value = "0";
+
+    document.getElementById("notes").value = "";
+
+    products = [];
+
+    addProductRow();
+
+}
+
+
+/* ============================================================
+   FORMATO
+============================================================ */
+
+function formatDate(date) {
+
+    if (!date) return "";
+
+    const parts = date.split("-");
+
+    if (parts.length !== 3) return date;
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+function formatMonth(month) {
+
+    if (!month) return "";
+
+    const parts = month.split("-");
+
+    if (parts.length !== 2) return month;
+
+    const year = parts[0];
+
+    const monthNumber =
+        Number(parts[1]);
+
+    const names = [
+
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre"
+
+    ];
+
+    return `${names[monthNumber - 1]} de ${year}`;
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ============================================================
+   AUTOGUARDADO
+============================================================ */
+
+setInterval(() => {
+
+    const data = {
+
+        documentType:
+            document.getElementById("documentType").value,
+
+        documentNumber:
+            document.getElementById("documentNumber").value,
+
+        documentDate:
+            document.getElementById("documentDate").value,
+
+        companyName:
+            document.getElementById("companyName").value,
+
+        companyNif:
+            document.getElementById("companyNif").value,
+
+        companyAddress:
+            document.getElementById("companyAddress").value,
+
+        clientName:
+            document.getElementById("clientName").value,
+
+        clientNif:
+            document.getElementById("clientNif").value,
+
+        clientAddress:
+            document.getElementById("clientAddress").value,
+
+        clientPhone:
+            document.getElementById("clientPhone").value,
+
+        clientEmail:
+            document.getElementById("clientEmail").value,
+
+        discountGross:
+            document.getElementById("discountGross").value,
+
+        notes:
+            document.getElementById("notes").value,
+
+        products
+
+    };
+
+    localStorage.setItem(
+        DOCUMENT_STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+}, 5000);
+
+
+/* ============================================================
+   INICIO
+============================================================ */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    document.getElementById("documentDate").value =
+        todayISO();
+
+    document.getElementById("salesMonth").value =
+        currentMonth();
+
+    document.getElementById("saleDate").value =
+        todayISO();
+
+    loadDocument();
+
+    if (products.length === 0) {
+
+        addProductRow();
+
+    }
+
+    renderSales();
+
+});
+
+
 </script>
+
 </body>
 </html>
