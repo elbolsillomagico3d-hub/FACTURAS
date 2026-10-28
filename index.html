@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -60,8 +61,29 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #d1ccdc;border-ra
 const $=id=>document.getElementById(id),today=()=>new Date().toISOString().slice(0,10),monthNow=()=>today().slice(0,7),money=n=>(Number(n)||0).toLocaleString('es-ES',{style:'currency',currency:'EUR'}),num=id=>Number($(id).value)||0;
 const get=(k,d)=>{try{return JSON.parse(localStorage.getItem('ebm_'+k))??d}catch{return d}},put=(k,v)=>localStorage.setItem('ebm_'+k,JSON.stringify(v));
 let invoices=get('invoices',[]),quotes=get('quotes',[]),receipts=get('receipts',[]),sales=get('sales',[]);
-const defaultBusiness={nombre:'El Bolsillo Mágico 3D',titular:'Almudena Vázquez Camarena',nif:'49122806H',direccion:'Carretera A8126 Moron coripe km3 venta espartero',telefono:'',email:'',iva:21,mensaje:'¡Gracias por tu compra!'};
-let business={...defaultBusiness,...get('business',defaultBusiness),nombre:'El Bolsillo Mágico 3D',titular:'Almudena Vázquez Camarena',nif:'49122806H',direccion:'Carretera A8126 Moron coripe km3 venta espartero',iva:21};
+
+/* DATOS FIJOS DEL NEGOCIO */
+const defaultBusiness={
+  nombre:'El Bolsillo Mágico 3D',
+  titular:'Almudena Vázquez Camarena',
+  nif:'49122806G',
+  direccion:'Crta. A8126 Morón-Coripe km 3, Venta Espartero, 41530 Morón de la Frontera, Sevilla',
+  telefono:'',
+  email:'',
+  iva:21,
+  mensaje:'¡Gracias por tu compra!'
+};
+
+let business={
+  ...defaultBusiness,
+  ...get('business',defaultBusiness),
+  nombre:'El Bolsillo Mágico 3D',
+  titular:'Almudena Vázquez Camarena',
+  nif:'49122806G',
+  direccion:'Crta. A8126 Morón-Coripe km 3, Venta Espartero, 41530 Morón de la Frontera, Sevilla',
+  iva:21
+};
+
 function saveAll(){put('invoices',invoices);put('quotes',quotes);put('receipts',receipts);put('sales',sales);put('business',business)}
 function sequence(list,prefix){let year=new Date().getFullYear(),nums=list.filter(x=>String(x.numero).includes(String(year))).map(x=>parseInt(String(x.numero).split('-').pop(),10)||0);return prefix+'-'+year+'-'+String(Math.max(0,...nums)+1).padStart(3,'0')}
 function init(){
@@ -94,7 +116,7 @@ function printTicket(){previewReceipt();window.print()}
 function downloadTicketPDF(d=receiptData()){if(!window.jspdf)return alert('No se ha podido cargar la librería PDF.');const {jsPDF}=window.jspdf,pdf=new jsPDF({unit:'mm',format:[80,220]});let y=10,center=40;pdf.setFont('courier','bold');pdf.setFontSize(12);pdf.text(business.nombre||'MI NEGOCIO',center,y,{align:'center'});y+=7;pdf.setFont('courier','normal');pdf.setFontSize(8);[business.titular,business.nif,business.direccion,business.telefono,business.email].filter(Boolean).forEach(s=>pdf.splitTextToSize(String(s),68).forEach(line=>{pdf.text(line,6,y);y+=4}));const line=()=>{pdf.setLineDashPattern([1,1],0);pdf.line(5,y,75,y);y+=5};line();pdf.text('TICKET / RECIBO',center,y,{align:'center'});y+=6;pdf.text('N.º '+d.numero,5,y);y+=5;pdf.text('Fecha: '+(d.fecha||''),5,y);y+=5;pdf.splitTextToSize('Cliente: '+(d.cliente||'Cliente particular'),68).forEach(s=>{pdf.text(s,5,y);y+=4});if(d.nif){pdf.text('NIF: '+d.nif,5,y);y+=5}line();pdf.splitTextToSize(d.concepto||'Producto',48).forEach(s=>{pdf.text(s,5,y);y+=4});pdf.text('Cantidad: '+d.cantidad,5,y);y+=5;line();[['TOTAL',money(d.total)],['COBRADO',money(d.cobrado)],['PENDIENTE',money(d.pendiente)],['PAGO',d.forma],['TIPO',d.tipo],['IVA indicado',(d.iva??21)+'%']].forEach(([a,b])=>{pdf.text(a,5,y);pdf.text(String(b),75,y,{align:'right'});y+=5});line();pdf.setFont('courier','bold');pdf.setFontSize(11);pdf.text('RECIBIDO '+money(d.cobrado),center,y,{align:'center'});y+=8;pdf.setFont('courier','normal');pdf.setFontSize(8);if(d.notas)pdf.splitTextToSize('Notas: '+d.notas,68).forEach(s=>{pdf.text(s,5,y);y+=4});y+=4;pdf.text(business.mensaje||'GRACIAS POR TU COMPRA',center,y,{align:'center'});pdf.save((d.numero||'recibo')+'.pdf')}
 function exportReceipt(id){let d=receipts.find(x=>x.id===id);if(d)downloadTicketPDF(d)}
 $('formRecibo').addEventListener('submit',e=>{e.preventDefault();let d=receiptData();if(!d.concepto.trim())return alert('Introduce el producto o concepto.');if(d.cobrado>d.total)return alert('El cobrado no puede superar el total.');if(d.tipo==='completo'&&d.cobrado<d.total)return alert('Para pago completo, el cobrado debe ser igual al total.');receipts.push(d);saveAll();renderAll();previewReceipt(d);alert('Recibo guardado.');downloadTicketPDF(d);resetForm('recibo')});
-function renderReceipts(){$('rList').innerHTML=receipts.length?receipts.slice().reverse().map(r=>`<div class="item"><strong>${esc(r.numero)}</strong> <span class="badge">${esc(r.tipo)}</span><p>${esc(r.fecha)} · ${esc(r.cliente||'Cliente particular')} · Cobrado: <strong>${money(r.cobrado)}</strong></p><p class="muted">Total: ${money(r.total)} · Pendiente: ${money(r.pendiente)}</p><button class="btn sm" onclick="exportReceipt('${r.id}')">PDF ticket</button><button class="btn gray sm" onclick="loadReceipt('${r.id}')">Ver ticket</button><button class="btn red sm" onclick="deleteDoc('recibo','${r.id}')">Eliminar</button></div>`).join(''):'<p class="muted">Todavía no hay recibos.</p>'}
+function renderReceipts(){$('rList').innerHTML=receipts.length?receipts.slice().reverse().map(r=>`<div class="item"><strong>${esc(r.numero)}</strong> <span class="badge">${esc(r.tipo)}</span><p>${esc(r.fecha)} · ${esc(r.cliente||'Cliente particular')} · Cobrado: <strong>${money(r.cobrado)}</strong></p><p class="muted">Total: ${money(r.total)} · Pendiente: ${money(r.pendiente)}</p><button class="btn sm" onclick="exportReceipt('${r.id}')">PDF ticket</button><button class="btn gray sm" onclick="loadReceipt('${r.id}')">Ver ticket</button><button class="btn red sm" onclick="deleteDoc('recibo','${r.id}')">Eliminar</button></div>`).join(''):'<p class="muted">Todavía no hay recibos guardados.</p>'}
 function loadReceipt(id){let r=receipts.find(x=>x.id===id);if(!r)return;let map={Numero:'numero',Fecha:'fecha',Tipo:'tipo',Forma:'forma',Cliente:'cliente',Nif:'nif',Concepto:'concepto',Cantidad:'cantidad',Total:'total',Cobrado:'cobrado',Iva:'iva',Notas:'notas'};Object.keys(map).forEach(k=>$('r'+k).value=r[map[k]]??'');previewReceipt(r);calculateReceiptTotals();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='recibos'));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='recibos'))}
 function addSale(){let fecha=$('cFecha').value||today(),venta=Math.max(0,num('cVenta')),sale={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),fecha,plataforma:$('cPlataforma').value,producto:$('cProducto').value,venta,comision:Math.max(0,num('cComision')),envio:Math.max(0,num('cEnvio')),notas:$('cNotas').value};if(!sale.producto.trim())return alert('Introduce el producto o pedido.');sales.push(sale);saveAll();$('cProducto').value='';$('cVenta').value=0;$('cComision').value=0;$('cEnvio').value=0;$('cNotas').value='';renderAll();alert('Venta guardada.')}
 function renderSales(){let month=$('cMes').value||monthNow(),current=sales.filter(s=>(s.fecha||'').slice(0,7)===month),platforms=['Wallapop','Vinted','TikTok Shop','Otra'];$('cSummary').innerHTML=platforms.map(p=>{let rows=current.filter(s=>s.plataforma===p),gross=rows.reduce((a,s)=>a+s.venta,0),fees=rows.reduce((a,s)=>a+s.comision+s.envio,0);return `<div class="item"><strong>${p}</strong><div class="totalrow"><span>Ventas (${rows.length})</span><strong>${money(gross)}</strong></div><div class="totalrow"><span>Comisiones y envíos</span><strong>${money(fees)}</strong></div><div class="totalrow"><span>Importe tras gastos</span><strong>${money(gross-fees)}</strong></div></div>`}).join('')+`<div class="totals"><div class="totalrow grand"><span>Total ventas</span><span>${money(current.reduce((a,s)=>a+s.venta,0))}</span></div></div>`;$('cList').innerHTML=sales.length?sales.slice().reverse().map(s=>`<div class="item"><strong>${esc(s.plataforma)}</strong> · ${esc(s.fecha)}<p>${esc(s.producto)} · Venta: ${money(s.venta)}</p><p class="muted">Comisión: ${money(s.comision)} · Envío: ${money(s.envio)}</p><button class="btn red sm" onclick="deleteSale('${s.id}')">Eliminar</button></div>`).join(''):'<p class="muted">Todavía no hay ventas registradas.</p>'}
